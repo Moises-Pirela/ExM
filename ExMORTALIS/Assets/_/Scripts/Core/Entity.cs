@@ -5,7 +5,7 @@ using UnityEngine.Serialization;
 
 namespace NecrotekLabs.Core
 {
-    public enum EntityState : byte
+    public enum EntityState : int
     {
         Active,
         Dead,

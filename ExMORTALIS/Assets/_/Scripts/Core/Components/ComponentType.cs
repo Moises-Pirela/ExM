@@ -2,10 +2,11 @@
 
 namespace NecrotekLabs.Core.Components
 {
-    public enum ComponentType : byte
+    public enum ComponentType : int
     {
         Movement,
-        
+        Equipment,
+        Inventory,
         
         Max
     }
