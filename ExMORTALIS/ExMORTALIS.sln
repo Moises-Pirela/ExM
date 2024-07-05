@@ -1,0 +1,29 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Assembly-CSharp-Editor", "Assembly-CSharp-Editor.csproj", "{121cf1d6-a335-3fd2-670a-e01d83505305}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Assembly-CSharp", "Assembly-CSharp.csproj", "{7b28c84a-2730-39c0-7574-37354fd6b230}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NecrotekLabs.Core", "NecrotekLabs.Core.csproj", "{84a1a245-9758-8fda-b9ee-8010ed75e5ad}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NecrotekLabs.Utilities", "NecrotekLabs.Utilities.csproj", "{5cfcbdc8-472a-41a5-59f2-0853730d9671}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{121cf1d6-a335-3fd2-670a-e01d83505305}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{121cf1d6-a335-3fd2-670a-e01d83505305}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7b28c84a-2730-39c0-7574-37354fd6b230}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7b28c84a-2730-39c0-7574-37354fd6b230}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{84a1a245-9758-8fda-b9ee-8010ed75e5ad}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{84a1a245-9758-8fda-b9ee-8010ed75e5ad}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5cfcbdc8-472a-41a5-59f2-0853730d9671}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5cfcbdc8-472a-41a5-59f2-0853730d9671}.Debug|Any CPU.Build.0 = Debug|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
