@@ -3,11 +3,17 @@ Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Assembly-CSharp-Editor", "Assembly-CSharp-Editor.csproj", "{121cf1d6-a335-3fd2-670a-e01d83505305}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Assembly-CSharp", "Assembly-CSharp.csproj", "{7b28c84a-2730-39c0-7574-37354fd6b230}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NecrotekLabs.Core", "NecrotekLabs.Core.csproj", "{84a1a245-9758-8fda-b9ee-8010ed75e5ad}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExMORTALIS", "ExMORTALIS.csproj", "{cfa2c5d8-0efd-59ec-665e-6f2a13db906a}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OccaSoftware.UltimateLitShader.Editor", "OccaSoftware.UltimateLitShader.Editor.csproj", "{ab498075-34b6-1c05-434a-72db19834e8a}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Assembly-CSharp", "Assembly-CSharp.csproj", "{7b28c84a-2730-39c0-7574-37354fd6b230}"
+EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NecrotekLabs.Utilities", "NecrotekLabs.Utilities.csproj", "{5cfcbdc8-472a-41a5-59f2-0853730d9671}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExMORTALIS.UI", "ExMORTALIS.UI.csproj", "{950d78f9-77d3-25b8-ca7d-6f871c910c0e}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -16,12 +22,18 @@ Global
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{121cf1d6-a335-3fd2-670a-e01d83505305}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{121cf1d6-a335-3fd2-670a-e01d83505305}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{7b28c84a-2730-39c0-7574-37354fd6b230}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{7b28c84a-2730-39c0-7574-37354fd6b230}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{84a1a245-9758-8fda-b9ee-8010ed75e5ad}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{84a1a245-9758-8fda-b9ee-8010ed75e5ad}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{cfa2c5d8-0efd-59ec-665e-6f2a13db906a}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{cfa2c5d8-0efd-59ec-665e-6f2a13db906a}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ab498075-34b6-1c05-434a-72db19834e8a}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ab498075-34b6-1c05-434a-72db19834e8a}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7b28c84a-2730-39c0-7574-37354fd6b230}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7b28c84a-2730-39c0-7574-37354fd6b230}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5cfcbdc8-472a-41a5-59f2-0853730d9671}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{5cfcbdc8-472a-41a5-59f2-0853730d9671}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{950d78f9-77d3-25b8-ca7d-6f871c910c0e}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{950d78f9-77d3-25b8-ca7d-6f871c910c0e}.Debug|Any CPU.Build.0 = Debug|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

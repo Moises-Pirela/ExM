@@ -1,0 +1,18 @@
+{
+    "name": "ExMORTALIS.UI",
+    "rootNamespace": "",
+    "references": [
+        "GUID:bfb8926debdd7244ca427be2ccc780b5",
+        "GUID:2e5eda36f965460ab908a9f9f27ad78f",
+        "GUID:30286d125b8849069b1858f321e5c461"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

@@ -17,7 +17,16 @@ namespace NecrotekLabs.Core
         public int entityId;
         public int entityConfigId;
 
+        public bool isStartingEntity;
+
         public NecroFlags<EntityState> EntityStateFlags;
         public NecroFlags<ComponentType> ComponentSignature;
+
+        public IComponent[] GetComponentConfigs()
+        {
+            var components = GetComponents<IComponent>();
+
+            return components;
+        }
     }
 }

@@ -6,6 +6,16 @@ namespace NecrotekLabs.Utilities
     {
         private int _value;
 
+        public NecroFlags(params T[] flags)
+        {
+            _value = 0;
+            
+            foreach (T flag in flags)
+            {
+                SetFlag(flag);
+            }
+        }
+
         public void SetFlag(T flag)
         {
             int castedFlag = (int)(object)flag;
