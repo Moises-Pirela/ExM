@@ -1,0 +1,62 @@
+// Copyright Epic Games, Inc. All Rights Reserved.
+/*===========================================================================
+	Generated code exported from UnrealHeaderTool.
+	DO NOT modify this manually! Edit the corresponding .h files instead!
+===========================================================================*/
+
+// IWYU pragma: private, include "ExMCore/Components/ExMInteractionComponent.h"
+#include "UObject/ObjectMacros.h"
+#include "UObject/ScriptMacros.h"
+
+PRAGMA_DISABLE_DEPRECATION_WARNINGS
+#ifdef EXM_ExMInteractionComponent_generated_h
+#error "ExMInteractionComponent.generated.h already included, missing '#pragma once' in ExMInteractionComponent.h"
+#endif
+#define EXM_ExMInteractionComponent_generated_h
+
+#define FID_NecrotekLabs_ExMORTALIS_ExM_Source_ExM_ExMCore_Components_ExMInteractionComponent_h_12_DELEGATE \
+EXM_API void FOnHoverInteractable_DelegateWrapper(const FMulticastScriptDelegate& OnHoverInteractable, const FString& displayName);
+
+
+#define FID_NecrotekLabs_ExMORTALIS_ExM_Source_ExM_ExMCore_Components_ExMInteractionComponent_h_13_DELEGATE \
+EXM_API void FOnClearInteractable_DelegateWrapper(const FMulticastScriptDelegate& OnClearInteractable);
+
+
+#define FID_NecrotekLabs_ExMORTALIS_ExM_Source_ExM_ExMCore_Components_ExMInteractionComponent_h_18_INCLASS_NO_PURE_DECLS \
+private: \
+	static void StaticRegisterNativesUExMInteractionComponent(); \
+	friend struct Z_Construct_UClass_UExMInteractionComponent_Statics; \
+public: \
+	DECLARE_CLASS(UExMInteractionComponent, UActorComponent, COMPILED_IN_FLAGS(0 | CLASS_Config), CASTCLASS_None, TEXT("/Script/ExM"), NO_API) \
+	DECLARE_SERIALIZER(UExMInteractionComponent)
+
+
+#define FID_NecrotekLabs_ExMORTALIS_ExM_Source_ExM_ExMCore_Components_ExMInteractionComponent_h_18_ENHANCED_CONSTRUCTORS \
+private: \
+	/** Private move- and copy-constructors, should never be used */ \
+	UExMInteractionComponent(UExMInteractionComponent&&); \
+	UExMInteractionComponent(const UExMInteractionComponent&); \
+public: \
+	DECLARE_VTABLE_PTR_HELPER_CTOR(NO_API, UExMInteractionComponent); \
+	DEFINE_VTABLE_PTR_HELPER_CTOR_CALLER(UExMInteractionComponent); \
+	DEFINE_DEFAULT_CONSTRUCTOR_CALL(UExMInteractionComponent) \
+	NO_API virtual ~UExMInteractionComponent();
+
+
+#define FID_NecrotekLabs_ExMORTALIS_ExM_Source_ExM_ExMCore_Components_ExMInteractionComponent_h_15_PROLOG
+#define FID_NecrotekLabs_ExMORTALIS_ExM_Source_ExM_ExMCore_Components_ExMInteractionComponent_h_18_GENERATED_BODY \
+PRAGMA_DISABLE_DEPRECATION_WARNINGS \
+public: \
+	FID_NecrotekLabs_ExMORTALIS_ExM_Source_ExM_ExMCore_Components_ExMInteractionComponent_h_18_INCLASS_NO_PURE_DECLS \
+	FID_NecrotekLabs_ExMORTALIS_ExM_Source_ExM_ExMCore_Components_ExMInteractionComponent_h_18_ENHANCED_CONSTRUCTORS \
+private: \
+PRAGMA_ENABLE_DEPRECATION_WARNINGS
+
+
+template<> EXM_API UClass* StaticClass<class UExMInteractionComponent>();
+
+#undef CURRENT_FILE_ID
+#define CURRENT_FILE_ID FID_NecrotekLabs_ExMORTALIS_ExM_Source_ExM_ExMCore_Components_ExMInteractionComponent_h
+
+
+PRAGMA_ENABLE_DEPRECATION_WARNINGS

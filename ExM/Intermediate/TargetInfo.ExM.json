@@ -1,0 +1,14 @@
+{
+	"Targets": [
+		{
+			"Name": "ExM",
+			"Path": "..\\Source\\ExM.Target.cs",
+			"Type": "Game"
+		},
+		{
+			"Name": "ExMEditor",
+			"Path": "..\\Source\\ExMEditor.Target.cs",
+			"Type": "Editor"
+		}
+	]
+}
