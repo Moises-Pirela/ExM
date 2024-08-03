@@ -41,7 +41,13 @@
             "c:\\repos\\unrealengine\\engine\\source\\runtime\\engine\\classes\\gameframework\\rootmotionsource.h",
             "c:\\repos\\unrealengine\\engine\\intermediate\\build\\win64\\unrealeditor\\inc\\engine\\uht\\rootmotionsource.generated.h",
             "c:\\repos\\unrealengine\\engine\\intermediate\\build\\win64\\unrealeditor\\inc\\engine\\uht\\character.generated.h",
-            "c:\\repos\\necroteklabs\\exmortalis\\exm\\intermediate\\build\\win64\\unrealeditor\\inc\\exm\\uht\\exmcharacter.generated.h"
+            "c:\\repos\\necroteklabs\\exmortalis\\exm\\intermediate\\build\\win64\\unrealeditor\\inc\\exm\\uht\\exmcharacter.generated.h",
+            "c:\\repos\\unrealengine\\engine\\source\\runtime\\engine\\classes\\physicsengine\\physicshandlecomponent.h",
+            "c:\\repos\\unrealengine\\engine\\source\\runtime\\engine\\classes\\physicsengine\\constraintinstance.h",
+            "c:\\repos\\unrealengine\\engine\\source\\runtime\\engine\\classes\\physicsengine\\constraintdrives.h",
+            "c:\\repos\\unrealengine\\engine\\intermediate\\build\\win64\\unrealeditor\\inc\\engine\\uht\\constraintdrives.generated.h",
+            "c:\\repos\\unrealengine\\engine\\intermediate\\build\\win64\\unrealeditor\\inc\\engine\\uht\\constraintinstance.generated.h",
+            "c:\\repos\\unrealengine\\engine\\intermediate\\build\\win64\\unrealeditor\\inc\\engine\\uht\\physicshandlecomponent.generated.h"
         ],
         "ImportedModules": [],
         "ImportedHeaderUnits": []
