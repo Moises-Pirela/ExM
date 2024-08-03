@@ -11,8 +11,11 @@
 #include "ExMPlayerController.h"
 #include "InputActionValue.h"
 #include "Engine/LocalPlayer.h"
+#include "ExMCore/Components/ExmEquipmentComponent.h"
+#include "ExMCore/Components/ExMInteractionComponent.h"
 #include "ExMCore/Components/ExMJumpComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "PhysicsEngine/PhysicsHandleComponent.h"
 
 DEFINE_LOG_CATEGORY(LogTemplateCharacter);
 
@@ -22,7 +25,7 @@ AExMCharacter::AExMCharacter()
 
 	FirstPersonCameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("FirstPersonCamera"));
 	FirstPersonCameraComponent->SetupAttachment(GetCapsuleComponent());
-	FirstPersonCameraComponent->SetRelativeLocation(FVector(-10.f, 0.f, 60.f)); // Position the camera
+	FirstPersonCameraComponent->SetRelativeLocation(FVector(-10.f, 0.f, 60.f));
 	FirstPersonCameraComponent->bUsePawnControlRotation = true;
 
 	Mesh1P = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("CharacterMesh1P"));
@@ -33,6 +36,8 @@ AExMCharacter::AExMCharacter()
 	Mesh1P->SetRelativeLocation(FVector(-30.f, 0.f, -150.f));
 
 	jumpComponent = CreateDefaultSubobject<UExMJumpComponent>("JumpComponent");
+	interactComponent = CreateDefaultSubobject<UExMInteractionComponent>("InteractionComponent");
+	equipmentComponent = CreateDefaultSubobject<UExmEquipmentComponent>("EquipmentComponent");
 }
 
 void AExMCharacter::BeginPlay()
@@ -90,6 +95,7 @@ void AExMCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompon
 		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Completed, this, &AExMCharacter::StopJumping);
 
 		EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &AExMCharacter::Move);
+		EnhancedInputComponent->BindAction(PrimaryFireAction, ETriggerEvent::Triggered, this, &AExMCharacter::PrimaryFire);
 
 		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &AExMCharacter::Look);
 
@@ -148,6 +154,39 @@ void AExMCharacter::Crouch(const FInputActionValue& value)
 		currentStance = EStances::Standing;
 		Super::UnCrouch();
 	}
+}
+
+void AExMCharacter::Lean(const FInputActionValue& value)
+{
+	
+}
+
+void AExMCharacter::PrimaryFire()
+{
+	if (interactComponent->grabbedComponent)
+	{
+		UPrimitiveComponent* grabbedComp = interactComponent->grabbedComponent;
+		
+		interactComponent->physicsHandleComponent->ReleaseComponent();
+		grabbedComp->SetPhysicsLinearVelocity(FVector::Zero());
+
+		FVector throwDirection = GetActorForwardVector();
+		interactComponent->grabbedComponent = nullptr;
+		interactComponent->currentInteractionType = INTERACTION_NONE;
+
+		float throwStrength = 1000.0f; //TODO: Calculate throw strength
+		grabbedComp->AddImpulse(throwDirection * throwStrength, NAME_None, true);
+		return;
+	}
+
+	//TODO: Shoot
+
+	equipmentComponent->FireWeapon();
+}
+
+void AExMCharacter::SecondaryFire()
+{
+	
 }
 
 bool AExMCharacter::CanStand()

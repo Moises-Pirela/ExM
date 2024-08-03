@@ -8,6 +8,8 @@
 #include "Logging/LogMacros.h"
 #include "ExMCharacter.generated.h"
 
+class UExmEquipmentComponent;
+class UExMInteractionComponent;
 class UExMJumpComponent;
 class UInputComponent;
 class USkeletalMeshComponent;
@@ -57,6 +59,15 @@ class AExMCharacter : public ACharacter
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess = "true"))
 	UInputAction* CrouchAction;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess = "true"))
+	UInputAction* PrimaryFireAction;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess = "true"))
+	UInputAction* SecondaryFireAction;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess = "true"))
+	UInputAction* LeanAction;
+
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Movement", meta=(AllowPrivateAccess = "true"))
 	float walkSpeed = 375;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Movement", meta=(AllowPrivateAccess = "true"))
@@ -73,8 +84,14 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	TEnumAsByte<EExMMovementMode> currentMovementMode;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category= "Components")
 	UExMJumpComponent* jumpComponent;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category= "Components")
+	UExMInteractionComponent* interactComponent;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category= "Components")
+	UExmEquipmentComponent* equipmentComponent;
 
 protected:
 	virtual void BeginPlay() override;
@@ -94,6 +111,9 @@ protected:
 	void Sprint(const FInputActionValue& value);
 	void CancelSprint();
 	void Crouch(const FInputActionValue& value);
+	void Lean(const FInputActionValue& value);
+	void PrimaryFire();
+	void SecondaryFire();
 	bool CanStand();
 
 
