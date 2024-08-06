@@ -12,9 +12,12 @@
 #include "InputActionValue.h"
 #include "Engine/LocalPlayer.h"
 #include "ExMCore/Components/ExmEquipmentComponent.h"
+#include "ExMCore/Components/ExMHealthComponent.h"
 #include "ExMCore/Components/ExMInteractionComponent.h"
 #include "ExMCore/Components/ExMJumpComponent.h"
+#include "ExMCore/Utils/DamageCalculators.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "GameFramework/SpringArmComponent.h"
 #include "PhysicsEngine/PhysicsHandleComponent.h"
 
 DEFINE_LOG_CATEGORY(LogTemplateCharacter);
@@ -23,20 +26,40 @@ AExMCharacter::AExMCharacter()
 {
 	GetCapsuleComponent()->InitCapsuleSize(55.f, 96.0f);
 
-	FirstPersonCameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("FirstPersonCamera"));
-	FirstPersonCameraComponent->SetupAttachment(GetCapsuleComponent());
-	FirstPersonCameraComponent->SetRelativeLocation(FVector(-10.f, 0.f, 60.f));
-	FirstPersonCameraComponent->bUsePawnControlRotation = true;
+	//TODO: Add root components to apply leaning and sway correctly
+
+	FPRoot = CreateDefaultSubobject<USceneComponent>("FP_Root");
+	FPRoot->SetupAttachment(GetCapsuleComponent());
+
+	CameraRoot = CreateDefaultSubobject<USpringArmComponent>("Camera_Root");
+	CameraRoot->SetupAttachment(FPRoot);
+
+	MeshRoot = CreateDefaultSubobject<USpringArmComponent>("Mesh_Root");
+	MeshRoot->SetupAttachment(FPRoot);
+
+	OffsetRoot = CreateDefaultSubobject<USceneComponent>("Offset_Root");
+	OffsetRoot->SetupAttachment(MeshRoot);
 
 	Mesh1P = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("CharacterMesh1P"));
 	Mesh1P->SetOnlyOwnerSee(true);
-	Mesh1P->SetupAttachment(FirstPersonCameraComponent);
+	Mesh1P->SetupAttachment(OffsetRoot);
 	Mesh1P->bCastDynamicShadow = false;
 	Mesh1P->CastShadow = false;
 	Mesh1P->SetRelativeLocation(FVector(-30.f, 0.f, -150.f));
 
-	jumpComponent = CreateDefaultSubobject<UExMJumpComponent>("JumpComponent");
-	interactComponent = CreateDefaultSubobject<UExMInteractionComponent>("InteractionComponent");
+	MeshLegs1P = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("CharacterLegsMesh1P"));
+	MeshLegs1P->SetOnlyOwnerSee(true);
+	MeshLegs1P->SetupAttachment(GetCapsuleComponent());
+	MeshLegs1P->bCastDynamicShadow = false;
+	MeshLegs1P->CastShadow = false;
+
+	FirstPersonCameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("FirstPersonCamera"));
+	FirstPersonCameraComponent->SetupAttachment(CameraRoot);
+	FirstPersonCameraComponent->SetRelativeLocation(FVector(-10.f, 0.f, 60.f));
+	FirstPersonCameraComponent->bUsePawnControlRotation = true;
+	
+	jumpComponent      = CreateDefaultSubobject<UExMJumpComponent>("JumpComponent");
+	interactComponent  = CreateDefaultSubobject<UExMInteractionComponent>("InteractionComponent");
 	equipmentComponent = CreateDefaultSubobject<UExmEquipmentComponent>("EquipmentComponent");
 }
 
@@ -45,11 +68,47 @@ void AExMCharacter::BeginPlay()
 	Super::BeginPlay();
 
 	currentStance = EStances::Standing;
+
+	healthComponent = GetComponentByClass<UExMHealthComponent>();
+}
+
+void AExMCharacter::Tick(float DeltaSeconds)
+{
+	Super::Tick(DeltaSeconds);
+	
+	// if (healthComponent->IsDead())
+	// {
+	// 	targetLeanRotAmount = -60;
+	// 	targetLeanLocAmount = 0;
+	// }
+	
+	FRotator targetRotation = FRotator(CameraRoot->GetRelativeRotation().Pitch, CameraRoot->GetRelativeRotation().Yaw, targetLeanRotAmount);
+	FRotator lerpedTarget = FMath::RInterpTo(CameraRoot->GetRelativeRotation(), targetRotation, DeltaSeconds, 10);
+	CameraRoot->SetRelativeRotation(lerpedTarget);
+	MeshRoot->SetRelativeRotation(lerpedTarget);
+
+	FVector targetLocation = FVector(0, targetLeanLocAmount, CameraRoot->GetRelativeLocation().Z);
+	FVector lerpedLocTarget = FMath::VInterpTo(CameraRoot->GetRelativeLocation(), targetLocation, DeltaSeconds, 10);
+
+	CameraRoot->SetRelativeLocation(lerpedLocTarget);
+	MeshRoot->SetRelativeLocation(lerpedLocTarget);
 }
 
 void AExMCharacter::Landed(const FHitResult& Hit)
 {
 	Super::Landed(Hit);
+
+	float fallHeightDiff = startFallHeight - GetActorLocation().Z;
+
+	if (fallHeightDiff > FALL_DAMAGE_THRESHOLD)
+	{
+		FDamageData damage;
+
+		damage.baseDamage = fallHeightDiff;
+		damage.damageType = EDamageTypes::DAMAGE_TYPE_FALL;
+
+		healthComponent->TakeDamage(damage);
+	}
 
 	ResetCoyoteTime();
 	jumpComponent->ResetJump();
@@ -76,6 +135,8 @@ void AExMCharacter::OnMovementModeChanged(EMovementMode PrevMovementMode, uint8 
 
 	if (GetCharacterMovement()->MovementMode == MOVE_Falling)
 	{
+		startFallHeight = GetActorLocation().Z;
+		
 		GetWorldTimerManager().SetTimer(jumpComponent->coyoteTimerHandle, this, &AExMCharacter::ResetCoyoteTime,
 		                                COYOTE_TIME, false);
 	}
@@ -101,6 +162,9 @@ void AExMCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompon
 
 		EnhancedInputComponent->BindAction(SprintAction, ETriggerEvent::Triggered, this, &AExMCharacter::Sprint);
 		EnhancedInputComponent->BindAction(SprintAction, ETriggerEvent::Completed, this, &AExMCharacter::CancelSprint);
+
+		EnhancedInputComponent->BindAction(LeanAction, ETriggerEvent::Triggered, this, &AExMCharacter::Lean);
+		EnhancedInputComponent->BindAction(LeanAction, ETriggerEvent::Completed, this, &AExMCharacter::StopLean);
 	}
 }
 
@@ -130,7 +194,7 @@ void AExMCharacter::Sprint(const FInputActionValue& value)
 {
 	if (currentStance == EStances::Crouching) return; //TODO: Stand first?
 
-	if (currentMovementMode != Walk) return;
+	if (currentMovementMode != Walk || GetVelocity().Size() == 0) return;
 
 	GetCharacterMovement()->MaxWalkSpeed = sprintSpeed;
 	currentMovementMode = EExMMovementMode::Sprint;
@@ -158,7 +222,24 @@ void AExMCharacter::Crouch(const FInputActionValue& value)
 
 void AExMCharacter::Lean(const FInputActionValue& value)
 {
-	
+	float leanDirection = value.Get<float>();
+
+	leanDirection = FMath::Clamp(leanDirection, -1, 1);
+
+	float rollAmount = leanDirection * maxLeanRotationAmount;
+	float yMoveAmount = leanDirection * maxLeanLocationAmount;
+
+	FRotator currentRotation = GetFirstPersonCameraComponent()->GetRelativeRotation();
+	FVector currentLocation = GetFirstPersonCameraComponent()->GetRelativeLocation();
+
+	targetLeanRotAmount = FMath::Clamp(currentRotation.Roll + rollAmount, -maxLeanRotationAmount, maxLeanRotationAmount);
+	targetLeanLocAmount = FMath::Clamp(currentLocation.Y + yMoveAmount, -maxLeanLocationAmount, maxLeanLocationAmount);
+}
+
+void AExMCharacter::StopLean(const FInputActionValue& value)
+{
+	targetLeanRotAmount = 0;
+	targetLeanLocAmount = 0;
 }
 
 void AExMCharacter::PrimaryFire()

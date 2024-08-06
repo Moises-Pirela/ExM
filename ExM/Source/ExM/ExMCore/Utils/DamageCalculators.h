@@ -13,7 +13,8 @@ enum EDamageTypes
 };
 
 typedef float (*DamageCalculator)(float damage, float resistance, int stacks);
-constexpr float FALL_DAMAGE_THRESHOLD = 5; 
+constexpr float UE_UNITS_TO_METERS = 100;
+constexpr float FALL_DAMAGE_THRESHOLD = 5 * UE_UNITS_TO_METERS; 
 constexpr float FALL_DAMAGE_FACTOR = 5; 
 
 inline float CalculateKineticDamage(float baseDamage, float resistance, int stacks)

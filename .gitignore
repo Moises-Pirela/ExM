@@ -75,3 +75,12 @@ ExM/DerivedDataCache/*
 /ExM/Intermediate/*
 /ExM/Binaries/Win64/*
 /ExM/Binaries/*
+/ExM/Binaries
+ExM/Binaries/Win64/UnrealEditor-ExM.patch_1.pdb
+ExM/Binaries/Win64/UnrealEditor-ExM.patch_1.exe
+ExM/Binaries/Win64/UnrealEditor-ExM.patch_0.pdb
+ExM/Binaries/Win64/UnrealEditor-ExM.patch_0.exe
+ExM/Binaries/Win64/UnrealEditor-ExM.patch_0.pdb
+ExM/Binaries/Win64/UnrealEditor-ExM.patch_1.exe
+ExM/Binaries/Win64/UnrealEditor-ExM.patch_1.pdb
+ExM/Binaries/Win64/UnrealEditor-ExM.pdb

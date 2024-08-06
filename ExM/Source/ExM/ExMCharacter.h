@@ -8,9 +8,12 @@
 #include "Logging/LogMacros.h"
 #include "ExMCharacter.generated.h"
 
+class UMovieSceneColorPropertySystem;
+class USpringArmComponent;
 class UExmEquipmentComponent;
 class UExMInteractionComponent;
 class UExMJumpComponent;
+class UExMHealthComponent;
 class UInputComponent;
 class USkeletalMeshComponent;
 class UCameraComponent;
@@ -41,8 +44,18 @@ class AExMCharacter : public ACharacter
 {
 	GENERATED_BODY()
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Mesh, meta = (AllowPrivateAccess = "true"))
+	USceneComponent* FPRoot;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Mesh, meta = (AllowPrivateAccess = "true"))
+	USceneComponent* OffsetRoot;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Mesh, meta = (AllowPrivateAccess = "true"))
+	USpringArmComponent* CameraRoot;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Mesh, meta = (AllowPrivateAccess = "true"))
+	USpringArmComponent* MeshRoot;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category=Mesh, meta = (AllowPrivateAccess = "true"))
 	USkeletalMeshComponent* Mesh1P;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category=Mesh, meta = (AllowPrivateAccess = "true"))
+	USkeletalMeshComponent* MeshLegs1P;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	UCameraComponent* FirstPersonCameraComponent;
@@ -52,7 +65,7 @@ class AExMCharacter : public ACharacter
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess = "true"))
 	UInputAction* MoveAction;
-	
+
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess = "true"))
 	UInputAction* SprintAction;
 
@@ -74,6 +87,14 @@ class AExMCharacter : public ACharacter
 	float sprintSpeed = 450;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Movement", meta=(AllowPrivateAccess = "true"))
 	float crouchSpeed = 300;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Movement", meta=(AllowPrivateAccess = "true"))
+	float maxLeanRotationAmount = 5;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Movement", meta=(AllowPrivateAccess = "true"))
+	float maxLeanLocationAmount = 20;
+
+	float startFallHeight;
+	float targetLeanRotAmount;
+	float targetLeanLocAmount;
 
 	EStances currentStance;
 	TEnumAsByte<EExMMovementMode> prevMovementMode;
@@ -93,16 +114,19 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category= "Components")
 	UExmEquipmentComponent* equipmentComponent;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category= "Components")
+	UExMHealthComponent* healthComponent;
+
 protected:
 	virtual void BeginPlay() override;
 
 public:
-		
 	/** Look Input Action */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	class UInputAction* LookAction;
 
 protected:
+	virtual void Tick(float DeltaSeconds) override;
 	virtual void Landed(const FHitResult& Hit) override;
 	virtual void Jump() override;
 	virtual void StopJumping() override;
@@ -112,6 +136,7 @@ protected:
 	void CancelSprint();
 	void Crouch(const FInputActionValue& value);
 	void Lean(const FInputActionValue& value);
+	void StopLean(const FInputActionValue& value);
 	void PrimaryFire();
 	void SecondaryFire();
 	bool CanStand();
@@ -126,6 +151,4 @@ protected:
 public:
 	USkeletalMeshComponent* GetMesh1P() const { return Mesh1P; }
 	UCameraComponent* GetFirstPersonCameraComponent() const { return FirstPersonCameraComponent; }
-
 };
-
