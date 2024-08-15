@@ -15,36 +15,36 @@ class UPrimitiveComponent;
 #endif
 #define EXM_ExMInteractionComponent_generated_h
 
-#define FID_NecrotekLabs_ExMORTALIS_ExM_Source_ExM_ExMCore_Components_ExMInteractionComponent_h_13_DELEGATE \
+#define FID_NecrotekLabs_ExMORTALIS_ExM_Source_ExM_ExMCore_Components_ExMInteractionComponent_h_14_DELEGATE \
 EXM_API void FOnHoverInteractable_DelegateWrapper(const FMulticastScriptDelegate& OnHoverInteractable, const FString& displayName);
 
 
-#define FID_NecrotekLabs_ExMORTALIS_ExM_Source_ExM_ExMCore_Components_ExMInteractionComponent_h_14_DELEGATE \
+#define FID_NecrotekLabs_ExMORTALIS_ExM_Source_ExM_ExMCore_Components_ExMInteractionComponent_h_15_DELEGATE \
 EXM_API void FOnCarry_DelegateWrapper(const FMulticastScriptDelegate& OnCarry, UPrimitiveComponent* carriedComponent);
 
 
-#define FID_NecrotekLabs_ExMORTALIS_ExM_Source_ExM_ExMCore_Components_ExMInteractionComponent_h_15_DELEGATE \
+#define FID_NecrotekLabs_ExMORTALIS_ExM_Source_ExM_ExMCore_Components_ExMInteractionComponent_h_16_DELEGATE \
 EXM_API void FOnRelease_DelegateWrapper(const FMulticastScriptDelegate& OnRelease);
 
 
-#define FID_NecrotekLabs_ExMORTALIS_ExM_Source_ExM_ExMCore_Components_ExMInteractionComponent_h_16_DELEGATE \
+#define FID_NecrotekLabs_ExMORTALIS_ExM_Source_ExM_ExMCore_Components_ExMInteractionComponent_h_17_DELEGATE \
 EXM_API void FOnThrow_DelegateWrapper(const FMulticastScriptDelegate& OnThrow);
 
 
-#define FID_NecrotekLabs_ExMORTALIS_ExM_Source_ExM_ExMCore_Components_ExMInteractionComponent_h_17_DELEGATE \
+#define FID_NecrotekLabs_ExMORTALIS_ExM_Source_ExM_ExMCore_Components_ExMInteractionComponent_h_18_DELEGATE \
 EXM_API void FOnClearInteractable_DelegateWrapper(const FMulticastScriptDelegate& OnClearInteractable);
 
 
-#define FID_NecrotekLabs_ExMORTALIS_ExM_Source_ExM_ExMCore_Components_ExMInteractionComponent_h_30_INCLASS_NO_PURE_DECLS \
+#define FID_NecrotekLabs_ExMORTALIS_ExM_Source_ExM_ExMCore_Components_ExMInteractionComponent_h_31_INCLASS_NO_PURE_DECLS \
 private: \
 	static void StaticRegisterNativesUExMInteractionComponent(); \
 	friend struct Z_Construct_UClass_UExMInteractionComponent_Statics; \
 public: \
-	DECLARE_CLASS(UExMInteractionComponent, UActorComponent, COMPILED_IN_FLAGS(0 | CLASS_Config), CASTCLASS_None, TEXT("/Script/ExM"), NO_API) \
+	DECLARE_CLASS(UExMInteractionComponent, UBaseComponent, COMPILED_IN_FLAGS(0 | CLASS_Config), CASTCLASS_None, TEXT("/Script/ExM"), NO_API) \
 	DECLARE_SERIALIZER(UExMInteractionComponent)
 
 
-#define FID_NecrotekLabs_ExMORTALIS_ExM_Source_ExM_ExMCore_Components_ExMInteractionComponent_h_30_ENHANCED_CONSTRUCTORS \
+#define FID_NecrotekLabs_ExMORTALIS_ExM_Source_ExM_ExMCore_Components_ExMInteractionComponent_h_31_ENHANCED_CONSTRUCTORS \
 private: \
 	/** Private move- and copy-constructors, should never be used */ \
 	UExMInteractionComponent(UExMInteractionComponent&&); \
@@ -56,12 +56,12 @@ public: \
 	NO_API virtual ~UExMInteractionComponent();
 
 
-#define FID_NecrotekLabs_ExMORTALIS_ExM_Source_ExM_ExMCore_Components_ExMInteractionComponent_h_27_PROLOG
-#define FID_NecrotekLabs_ExMORTALIS_ExM_Source_ExM_ExMCore_Components_ExMInteractionComponent_h_30_GENERATED_BODY \
+#define FID_NecrotekLabs_ExMORTALIS_ExM_Source_ExM_ExMCore_Components_ExMInteractionComponent_h_28_PROLOG
+#define FID_NecrotekLabs_ExMORTALIS_ExM_Source_ExM_ExMCore_Components_ExMInteractionComponent_h_31_GENERATED_BODY \
 PRAGMA_DISABLE_DEPRECATION_WARNINGS \
 public: \
-	FID_NecrotekLabs_ExMORTALIS_ExM_Source_ExM_ExMCore_Components_ExMInteractionComponent_h_30_INCLASS_NO_PURE_DECLS \
-	FID_NecrotekLabs_ExMORTALIS_ExM_Source_ExM_ExMCore_Components_ExMInteractionComponent_h_30_ENHANCED_CONSTRUCTORS \
+	FID_NecrotekLabs_ExMORTALIS_ExM_Source_ExM_ExMCore_Components_ExMInteractionComponent_h_31_INCLASS_NO_PURE_DECLS \
+	FID_NecrotekLabs_ExMORTALIS_ExM_Source_ExM_ExMCore_Components_ExMInteractionComponent_h_31_ENHANCED_CONSTRUCTORS \
 private: \
 PRAGMA_ENABLE_DEPRECATION_WARNINGS
 

@@ -10,7 +10,7 @@ PRAGMA_DISABLE_DEPRECATION_WARNINGS
 void EmptyLinkFunctionForGeneratedCodeExMResistancesComponent() {}
 
 // Begin Cross Module References
-ENGINE_API UClass* Z_Construct_UClass_UActorComponent();
+EXM_API UClass* Z_Construct_UClass_UBaseComponent();
 EXM_API UClass* Z_Construct_UClass_UExMResistancesComponent();
 EXM_API UClass* Z_Construct_UClass_UExMResistancesComponent_NoRegister();
 EXM_API UEnum* Z_Construct_UEnum_ExM_EDamageTypes();
@@ -60,7 +60,7 @@ const UECodeGen_Private::FPropertyParamsBase* const Z_Construct_UClass_UExMResis
 };
 static_assert(UE_ARRAY_COUNT(Z_Construct_UClass_UExMResistancesComponent_Statics::PropPointers) < 2048);
 UObject* (*const Z_Construct_UClass_UExMResistancesComponent_Statics::DependentSingletons[])() = {
-	(UObject* (*)())Z_Construct_UClass_UActorComponent,
+	(UObject* (*)())Z_Construct_UClass_UBaseComponent,
 	(UObject* (*)())Z_Construct_UPackage__Script_ExM,
 };
 static_assert(UE_ARRAY_COUNT(Z_Construct_UClass_UExMResistancesComponent_Statics::DependentSingletons) < 16);
@@ -99,10 +99,10 @@ UExMResistancesComponent::~UExMResistancesComponent() {}
 struct Z_CompiledInDeferFile_FID_NecrotekLabs_ExMORTALIS_ExM_Source_ExM_ExMCore_Components_ExMResistancesComponent_h_Statics
 {
 	static constexpr FClassRegisterCompiledInInfo ClassInfo[] = {
-		{ Z_Construct_UClass_UExMResistancesComponent, UExMResistancesComponent::StaticClass, TEXT("UExMResistancesComponent"), &Z_Registration_Info_UClass_UExMResistancesComponent, CONSTRUCT_RELOAD_VERSION_INFO(FClassReloadVersionInfo, sizeof(UExMResistancesComponent), 790108136U) },
+		{ Z_Construct_UClass_UExMResistancesComponent, UExMResistancesComponent::StaticClass, TEXT("UExMResistancesComponent"), &Z_Registration_Info_UClass_UExMResistancesComponent, CONSTRUCT_RELOAD_VERSION_INFO(FClassReloadVersionInfo, sizeof(UExMResistancesComponent), 328164368U) },
 	};
 };
-static FRegisterCompiledInInfo Z_CompiledInDeferFile_FID_NecrotekLabs_ExMORTALIS_ExM_Source_ExM_ExMCore_Components_ExMResistancesComponent_h_340424233(TEXT("/Script/ExM"),
+static FRegisterCompiledInInfo Z_CompiledInDeferFile_FID_NecrotekLabs_ExMORTALIS_ExM_Source_ExM_ExMCore_Components_ExMResistancesComponent_h_3602638079(TEXT("/Script/ExM"),
 	Z_CompiledInDeferFile_FID_NecrotekLabs_ExMORTALIS_ExM_Source_ExM_ExMCore_Components_ExMResistancesComponent_h_Statics::ClassInfo, UE_ARRAY_COUNT(Z_CompiledInDeferFile_FID_NecrotekLabs_ExMORTALIS_ExM_Source_ExM_ExMCore_Components_ExMResistancesComponent_h_Statics::ClassInfo),
 	nullptr, 0,
 	nullptr, 0);

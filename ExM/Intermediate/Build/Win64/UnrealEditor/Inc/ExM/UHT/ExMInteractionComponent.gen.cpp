@@ -10,9 +10,9 @@ PRAGMA_DISABLE_DEPRECATION_WARNINGS
 void EmptyLinkFunctionForGeneratedCodeExMInteractionComponent() {}
 
 // Begin Cross Module References
-ENGINE_API UClass* Z_Construct_UClass_UActorComponent();
 ENGINE_API UClass* Z_Construct_UClass_UPrimitiveComponent_NoRegister();
 ENHANCEDINPUT_API UClass* Z_Construct_UClass_UInputAction_NoRegister();
+EXM_API UClass* Z_Construct_UClass_UBaseComponent();
 EXM_API UClass* Z_Construct_UClass_UExMInteractionComponent();
 EXM_API UClass* Z_Construct_UClass_UExMInteractionComponent_NoRegister();
 EXM_API UEnum* Z_Construct_UEnum_ExM_EInteractionType();
@@ -336,7 +336,7 @@ const UECodeGen_Private::FPropertyParamsBase* const Z_Construct_UClass_UExMInter
 };
 static_assert(UE_ARRAY_COUNT(Z_Construct_UClass_UExMInteractionComponent_Statics::PropPointers) < 2048);
 UObject* (*const Z_Construct_UClass_UExMInteractionComponent_Statics::DependentSingletons[])() = {
-	(UObject* (*)())Z_Construct_UClass_UActorComponent,
+	(UObject* (*)())Z_Construct_UClass_UBaseComponent,
 	(UObject* (*)())Z_Construct_UPackage__Script_ExM,
 };
 static_assert(UE_ARRAY_COUNT(Z_Construct_UClass_UExMInteractionComponent_Statics::DependentSingletons) < 16);
@@ -378,10 +378,10 @@ struct Z_CompiledInDeferFile_FID_NecrotekLabs_ExMORTALIS_ExM_Source_ExM_ExMCore_
 		{ EInteractionType_StaticEnum, TEXT("EInteractionType"), &Z_Registration_Info_UEnum_EInteractionType, CONSTRUCT_RELOAD_VERSION_INFO(FEnumReloadVersionInfo, 2612140709U) },
 	};
 	static constexpr FClassRegisterCompiledInInfo ClassInfo[] = {
-		{ Z_Construct_UClass_UExMInteractionComponent, UExMInteractionComponent::StaticClass, TEXT("UExMInteractionComponent"), &Z_Registration_Info_UClass_UExMInteractionComponent, CONSTRUCT_RELOAD_VERSION_INFO(FClassReloadVersionInfo, sizeof(UExMInteractionComponent), 1071485784U) },
+		{ Z_Construct_UClass_UExMInteractionComponent, UExMInteractionComponent::StaticClass, TEXT("UExMInteractionComponent"), &Z_Registration_Info_UClass_UExMInteractionComponent, CONSTRUCT_RELOAD_VERSION_INFO(FClassReloadVersionInfo, sizeof(UExMInteractionComponent), 1974988538U) },
 	};
 };
-static FRegisterCompiledInInfo Z_CompiledInDeferFile_FID_NecrotekLabs_ExMORTALIS_ExM_Source_ExM_ExMCore_Components_ExMInteractionComponent_h_2056064681(TEXT("/Script/ExM"),
+static FRegisterCompiledInInfo Z_CompiledInDeferFile_FID_NecrotekLabs_ExMORTALIS_ExM_Source_ExM_ExMCore_Components_ExMInteractionComponent_h_1510895911(TEXT("/Script/ExM"),
 	Z_CompiledInDeferFile_FID_NecrotekLabs_ExMORTALIS_ExM_Source_ExM_ExMCore_Components_ExMInteractionComponent_h_Statics::ClassInfo, UE_ARRAY_COUNT(Z_CompiledInDeferFile_FID_NecrotekLabs_ExMORTALIS_ExM_Source_ExM_ExMCore_Components_ExMInteractionComponent_h_Statics::ClassInfo),
 	nullptr, 0,
 	Z_CompiledInDeferFile_FID_NecrotekLabs_ExMORTALIS_ExM_Source_ExM_ExMCore_Components_ExMInteractionComponent_h_Statics::EnumInfo, UE_ARRAY_COUNT(Z_CompiledInDeferFile_FID_NecrotekLabs_ExMORTALIS_ExM_Source_ExM_ExMCore_Components_ExMInteractionComponent_h_Statics::EnumInfo));

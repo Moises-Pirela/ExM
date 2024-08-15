@@ -26,8 +26,8 @@ DECLARE_LOG_CATEGORY_EXTERN(LogTemplateCharacter, Log, All);
 UENUM(BlueprintType)
 enum EStances
 {
-	Standing,
-	Crouching
+	STANCE_STANDING,
+	STANCE_CROUCHING
 };
 
 UENUM(BlueprintType)
@@ -38,6 +38,8 @@ enum EExMMovementMode
 	Vault,
 	Jump,
 };
+
+constexpr float CAN_STAND_DURATION = 0.01667f;
 
 UCLASS(config=Game)
 class AExMCharacter : public ACharacter
@@ -91,13 +93,27 @@ class AExMCharacter : public ACharacter
 	float maxLeanRotationAmount = 5;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Movement", meta=(AllowPrivateAccess = "true"))
 	float maxLeanLocationAmount = 20;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Movement", meta=(AllowPrivateAccess = "true"))
+	float crouchCapsuleHeight = 60;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Movement", meta=(AllowPrivateAccess = "true"))
+	float standCapsuleHeight = 90;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Movement", meta=(AllowPrivateAccess = "true"))
+	float stanceChangeSpeed = 10;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Movement", meta=(AllowPrivateAccess = "true"))
+	float crouchEyeHeight = 20;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Movement", meta=(AllowPrivateAccess = "true"))
+	float standEyeHeight = 50;
 
 	float startFallHeight;
 	float targetLeanRotAmount;
 	float targetLeanLocAmount;
+	float targetStanceCapsuleHeight;
+	float targetStanceEyeHeight;
 
 	EStances currentStance;
 	TEnumAsByte<EExMMovementMode> prevMovementMode;
+	
+	FTimerHandle checkCanStandTimerHandle;
 
 public:
 	AExMCharacter();
@@ -131,15 +147,18 @@ protected:
 	virtual void Jump() override;
 	virtual void StopJumping() override;
 	void Move(const FInputActionValue& Value);
+	void CancelMove(const FInputActionValue& Value);
 	void Look(const FInputActionValue& Value);
 	void Sprint(const FInputActionValue& value);
 	void CancelSprint();
-	void Crouch(const FInputActionValue& value);
+	void DoCrouch(const FInputActionValue& value);
+	void StartStand();
+	void DoStand();
 	void Lean(const FInputActionValue& value);
 	void StopLean(const FInputActionValue& value);
 	void PrimaryFire();
 	void SecondaryFire();
-	bool CanStand();
+	void TryStand();
 
 
 	virtual void OnMovementModeChanged(EMovementMode PrevMovementMode, uint8 PreviousCustomMode) override;

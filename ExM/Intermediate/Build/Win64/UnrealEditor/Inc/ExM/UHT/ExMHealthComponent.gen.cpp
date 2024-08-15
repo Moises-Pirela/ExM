@@ -11,7 +11,7 @@ void EmptyLinkFunctionForGeneratedCodeExMHealthComponent() {}
 
 // Begin Cross Module References
 ENGINE_API UClass* Z_Construct_UClass_AActor_NoRegister();
-ENGINE_API UClass* Z_Construct_UClass_UActorComponent();
+EXM_API UClass* Z_Construct_UClass_UBaseComponent();
 EXM_API UClass* Z_Construct_UClass_UExMHealthComponent();
 EXM_API UClass* Z_Construct_UClass_UExMHealthComponent_NoRegister();
 EXM_API UEnum* Z_Construct_UEnum_ExM_EDamageTypes();
@@ -136,7 +136,7 @@ struct Z_Construct_UClass_UExMHealthComponent_Statics
 #if WITH_METADATA
 	static constexpr UECodeGen_Private::FMetaDataPairParam Class_MetaDataParams[] = {
 		{ "BlueprintSpawnableComponent", "" },
-		{ "ClassGroupNames", "ExMortalis" },
+		{ "ClassGroupNames", "ExMORTALIS" },
 		{ "IncludePath", "ExMCore/Components/ExMHealthComponent.h" },
 		{ "ModuleRelativePath", "ExMCore/Components/ExMHealthComponent.h" },
 	};
@@ -172,7 +172,7 @@ const UECodeGen_Private::FPropertyParamsBase* const Z_Construct_UClass_UExMHealt
 };
 static_assert(UE_ARRAY_COUNT(Z_Construct_UClass_UExMHealthComponent_Statics::PropPointers) < 2048);
 UObject* (*const Z_Construct_UClass_UExMHealthComponent_Statics::DependentSingletons[])() = {
-	(UObject* (*)())Z_Construct_UClass_UActorComponent,
+	(UObject* (*)())Z_Construct_UClass_UBaseComponent,
 	(UObject* (*)())Z_Construct_UPackage__Script_ExM,
 };
 static_assert(UE_ARRAY_COUNT(Z_Construct_UClass_UExMHealthComponent_Statics::DependentSingletons) < 16);
@@ -214,10 +214,10 @@ struct Z_CompiledInDeferFile_FID_NecrotekLabs_ExMORTALIS_ExM_Source_ExM_ExMCore_
 		{ FDamageData::StaticStruct, Z_Construct_UScriptStruct_FDamageData_Statics::NewStructOps, TEXT("DamageData"), &Z_Registration_Info_UScriptStruct_DamageData, CONSTRUCT_RELOAD_VERSION_INFO(FStructReloadVersionInfo, sizeof(FDamageData), 2290297756U) },
 	};
 	static constexpr FClassRegisterCompiledInInfo ClassInfo[] = {
-		{ Z_Construct_UClass_UExMHealthComponent, UExMHealthComponent::StaticClass, TEXT("UExMHealthComponent"), &Z_Registration_Info_UClass_UExMHealthComponent, CONSTRUCT_RELOAD_VERSION_INFO(FClassReloadVersionInfo, sizeof(UExMHealthComponent), 1297185980U) },
+		{ Z_Construct_UClass_UExMHealthComponent, UExMHealthComponent::StaticClass, TEXT("UExMHealthComponent"), &Z_Registration_Info_UClass_UExMHealthComponent, CONSTRUCT_RELOAD_VERSION_INFO(FClassReloadVersionInfo, sizeof(UExMHealthComponent), 808910538U) },
 	};
 };
-static FRegisterCompiledInInfo Z_CompiledInDeferFile_FID_NecrotekLabs_ExMORTALIS_ExM_Source_ExM_ExMCore_Components_ExMHealthComponent_h_4254116465(TEXT("/Script/ExM"),
+static FRegisterCompiledInInfo Z_CompiledInDeferFile_FID_NecrotekLabs_ExMORTALIS_ExM_Source_ExM_ExMCore_Components_ExMHealthComponent_h_2391316222(TEXT("/Script/ExM"),
 	Z_CompiledInDeferFile_FID_NecrotekLabs_ExMORTALIS_ExM_Source_ExM_ExMCore_Components_ExMHealthComponent_h_Statics::ClassInfo, UE_ARRAY_COUNT(Z_CompiledInDeferFile_FID_NecrotekLabs_ExMORTALIS_ExM_Source_ExM_ExMCore_Components_ExMHealthComponent_h_Statics::ClassInfo),
 	Z_CompiledInDeferFile_FID_NecrotekLabs_ExMORTALIS_ExM_Source_ExM_ExMCore_Components_ExMHealthComponent_h_Statics::ScriptStructInfo, UE_ARRAY_COUNT(Z_CompiledInDeferFile_FID_NecrotekLabs_ExMORTALIS_ExM_Source_ExM_ExMCore_Components_ExMHealthComponent_h_Statics::ScriptStructInfo),
 	nullptr, 0);

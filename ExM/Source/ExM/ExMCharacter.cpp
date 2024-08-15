@@ -10,12 +10,14 @@
 #include "EnhancedInputSubsystems.h"
 #include "ExMPlayerController.h"
 #include "InputActionValue.h"
+#include "PersonaUtils.h"
 #include "Engine/LocalPlayer.h"
 #include "ExMCore/Components/ExmEquipmentComponent.h"
 #include "ExMCore/Components/ExMHealthComponent.h"
 #include "ExMCore/Components/ExMInteractionComponent.h"
 #include "ExMCore/Components/ExMJumpComponent.h"
 #include "ExMCore/Utils/DamageCalculators.h"
+#include "ExMCore/Utils/Exmortalis.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "PhysicsEngine/PhysicsHandleComponent.h"
@@ -57,9 +59,9 @@ AExMCharacter::AExMCharacter()
 	FirstPersonCameraComponent->SetupAttachment(CameraRoot);
 	FirstPersonCameraComponent->SetRelativeLocation(FVector(-10.f, 0.f, 60.f));
 	FirstPersonCameraComponent->bUsePawnControlRotation = true;
-	
-	jumpComponent      = CreateDefaultSubobject<UExMJumpComponent>("JumpComponent");
-	interactComponent  = CreateDefaultSubobject<UExMInteractionComponent>("InteractionComponent");
+
+	jumpComponent = CreateDefaultSubobject<UExMJumpComponent>("JumpComponent");
+	interactComponent = CreateDefaultSubobject<UExMInteractionComponent>("InteractionComponent");
 	equipmentComponent = CreateDefaultSubobject<UExmEquipmentComponent>("EquipmentComponent");
 }
 
@@ -67,7 +69,9 @@ void AExMCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 
-	currentStance = EStances::Standing;
+	currentStance = EStances::STANCE_STANDING;
+	targetStanceCapsuleHeight = standCapsuleHeight;
+	targetStanceEyeHeight = standEyeHeight;
 
 	healthComponent = GetComponentByClass<UExMHealthComponent>();
 }
@@ -75,14 +79,15 @@ void AExMCharacter::BeginPlay()
 void AExMCharacter::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
-	
+
 	// if (healthComponent->IsDead())
 	// {
 	// 	targetLeanRotAmount = -60;
 	// 	targetLeanLocAmount = 0;
 	// }
-	
-	FRotator targetRotation = FRotator(CameraRoot->GetRelativeRotation().Pitch, CameraRoot->GetRelativeRotation().Yaw, targetLeanRotAmount);
+
+	FRotator targetRotation = FRotator(CameraRoot->GetRelativeRotation().Pitch, CameraRoot->GetRelativeRotation().Yaw,
+	                                   targetLeanRotAmount);
 	FRotator lerpedTarget = FMath::RInterpTo(CameraRoot->GetRelativeRotation(), targetRotation, DeltaSeconds, 10);
 	CameraRoot->SetRelativeRotation(lerpedTarget);
 	MeshRoot->SetRelativeRotation(lerpedTarget);
@@ -92,6 +97,14 @@ void AExMCharacter::Tick(float DeltaSeconds)
 
 	CameraRoot->SetRelativeLocation(lerpedLocTarget);
 	MeshRoot->SetRelativeLocation(lerpedLocTarget);
+
+	//--------------CROUCH
+
+	float alpha = targetStanceCapsuleHeight / GetCapsuleComponent()->GetUnscaledCapsuleHalfHeight();
+	float easedTarget = EaseInOutSine(alpha);
+	float lerpedStanceTarget = FMath::Lerp(GetCapsuleComponent()->GetUnscaledCapsuleHalfHeight(),
+	                                       targetStanceCapsuleHeight, easedTarget * DeltaSeconds * stanceChangeSpeed);
+	GetCapsuleComponent()->SetCapsuleHalfHeight(lerpedStanceTarget);
 }
 
 void AExMCharacter::Landed(const FHitResult& Hit)
@@ -110,9 +123,10 @@ void AExMCharacter::Landed(const FHitResult& Hit)
 		healthComponent->TakeDamage(damage);
 	}
 
+	currentMovementMode = EExMMovementMode::Walk;
+
 	ResetCoyoteTime();
 	jumpComponent->ResetJump();
-	currentMovementMode = EExMMovementMode::Walk;
 }
 
 void AExMCharacter::Jump()
@@ -136,7 +150,7 @@ void AExMCharacter::OnMovementModeChanged(EMovementMode PrevMovementMode, uint8 
 	if (GetCharacterMovement()->MovementMode == MOVE_Falling)
 	{
 		startFallHeight = GetActorLocation().Z;
-		
+
 		GetWorldTimerManager().SetTimer(jumpComponent->coyoteTimerHandle, this, &AExMCharacter::ResetCoyoteTime,
 		                                COYOTE_TIME, false);
 	}
@@ -156,7 +170,8 @@ void AExMCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompon
 		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Completed, this, &AExMCharacter::StopJumping);
 
 		EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &AExMCharacter::Move);
-		EnhancedInputComponent->BindAction(PrimaryFireAction, ETriggerEvent::Triggered, this, &AExMCharacter::PrimaryFire);
+		EnhancedInputComponent->BindAction(PrimaryFireAction, ETriggerEvent::Triggered, this,
+		                                   &AExMCharacter::PrimaryFire);
 
 		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &AExMCharacter::Look);
 
@@ -165,6 +180,9 @@ void AExMCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompon
 
 		EnhancedInputComponent->BindAction(LeanAction, ETriggerEvent::Triggered, this, &AExMCharacter::Lean);
 		EnhancedInputComponent->BindAction(LeanAction, ETriggerEvent::Completed, this, &AExMCharacter::StopLean);
+
+		EnhancedInputComponent->BindAction(CrouchAction, ETriggerEvent::Triggered, this, &AExMCharacter::DoCrouch);
+		EnhancedInputComponent->BindAction(CrouchAction, ETriggerEvent::Completed, this, &AExMCharacter::StartStand);
 	}
 }
 
@@ -177,6 +195,10 @@ void AExMCharacter::Move(const FInputActionValue& Value)
 		AddMovementInput(GetActorForwardVector(), MovementVector.Y);
 		AddMovementInput(GetActorRightVector(), MovementVector.X);
 	}
+}
+
+void AExMCharacter::CancelMove(const FInputActionValue& Value)
+{
 }
 
 void AExMCharacter::Look(const FInputActionValue& Value)
@@ -192,7 +214,7 @@ void AExMCharacter::Look(const FInputActionValue& Value)
 
 void AExMCharacter::Sprint(const FInputActionValue& value)
 {
-	if (currentStance == EStances::Crouching) return; //TODO: Stand first?
+	if (currentStance == EStances::STANCE_CROUCHING) return; //TODO: StartStand first?
 
 	if (currentMovementMode != Walk || GetVelocity().Size() == 0) return;
 
@@ -206,18 +228,52 @@ void AExMCharacter::CancelSprint()
 	currentMovementMode = EExMMovementMode::Walk;
 }
 
-void AExMCharacter::Crouch(const FInputActionValue& value)
+void AExMCharacter::DoCrouch(const FInputActionValue& value)
 {
-	if (currentStance == EStances::Standing)
+	if (currentStance == EStances::STANCE_STANDING)
 	{
-		currentStance = EStances::Crouching;
-		Super::Crouch();
+		currentStance = EStances::STANCE_CROUCHING;
+		GetCharacterMovement()->MaxWalkSpeed = crouchSpeed;
+		targetStanceCapsuleHeight = crouchCapsuleHeight;
+		GetWorld()->GetTimerManager().ClearTimer(checkCanStandTimerHandle);
 	}
-	else if (currentStance == EStances::Crouching && CanStand())
+}
+
+void AExMCharacter::StartStand()
+{
+	if (currentStance == EStances::STANCE_CROUCHING)
 	{
-		currentStance = EStances::Standing;
-		Super::UnCrouch();
+		GetWorld()->GetTimerManager().ClearTimer(checkCanStandTimerHandle);
+		GetWorld()->GetTimerManager().SetTimer(checkCanStandTimerHandle,this, &AExMCharacter::TryStand, CAN_STAND_DURATION, true);
 	}
+}
+
+void AExMCharacter::DoStand()
+{
+	GetWorld()->GetTimerManager().ClearTimer(checkCanStandTimerHandle);
+	currentStance = EStances::STANCE_STANDING;
+	GetCharacterMovement()->MaxWalkSpeed = walkSpeed;
+	targetStanceCapsuleHeight = standCapsuleHeight;
+}
+
+void AExMCharacter::TryStand()
+{
+	float _stanceHeightDiff = crouchCapsuleHeight - standCapsuleHeight;
+	float _z = GetActorLocation().Z + crouchCapsuleHeight;
+	float _lerpedHeight = (FMath::Lerp(0, _stanceHeightDiff,  1 - GetWorld()->GetDeltaSeconds()) * 1.1) + _z;
+	FVector _startTraceLocation = FVector(GetActorLocation().X, GetActorLocation().Y, _z);
+	FVector _endTraceLocation = FVector(GetActorLocation().X, GetActorLocation().Y, _lerpedHeight);
+
+	FHitResult hit;
+	FCollisionQueryParams params(NAME_None, false, this);
+	FCollisionShape sphereShape = FCollisionShape::MakeSphere(GetCapsuleComponent()->GetUnscaledCapsuleRadius());
+
+	if (GetWorld()->SweepSingleByChannel(hit, _startTraceLocation, _endTraceLocation, FQuat::Identity,ECC_Visibility, sphereShape, params))
+	{
+		return;
+	}
+
+	DoStand();
 }
 
 void AExMCharacter::Lean(const FInputActionValue& value)
@@ -232,7 +288,8 @@ void AExMCharacter::Lean(const FInputActionValue& value)
 	FRotator currentRotation = GetFirstPersonCameraComponent()->GetRelativeRotation();
 	FVector currentLocation = GetFirstPersonCameraComponent()->GetRelativeLocation();
 
-	targetLeanRotAmount = FMath::Clamp(currentRotation.Roll + rollAmount, -maxLeanRotationAmount, maxLeanRotationAmount);
+	targetLeanRotAmount = FMath::Clamp(currentRotation.Roll + rollAmount, -maxLeanRotationAmount,
+	                                   maxLeanRotationAmount);
 	targetLeanLocAmount = FMath::Clamp(currentLocation.Y + yMoveAmount, -maxLeanLocationAmount, maxLeanLocationAmount);
 }
 
@@ -247,7 +304,7 @@ void AExMCharacter::PrimaryFire()
 	if (interactComponent->grabbedComponent)
 	{
 		UPrimitiveComponent* grabbedComp = interactComponent->grabbedComponent;
-		
+
 		interactComponent->physicsHandleComponent->ReleaseComponent();
 		grabbedComp->SetPhysicsLinearVelocity(FVector::Zero());
 
@@ -267,10 +324,5 @@ void AExMCharacter::PrimaryFire()
 
 void AExMCharacter::SecondaryFire()
 {
-	
-}
-
-bool AExMCharacter::CanStand()
-{
-	return true;
+	equipmentComponent->SecondaryFire();
 }

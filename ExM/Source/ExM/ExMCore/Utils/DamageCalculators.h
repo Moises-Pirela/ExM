@@ -1,6 +1,8 @@
 ﻿#pragma once
 #include <map>
 
+#include "Exmortalis.h"
+
 UENUM(BlueprintType)
 enum EDamageTypes
 {
@@ -13,7 +15,7 @@ enum EDamageTypes
 };
 
 typedef float (*DamageCalculator)(float damage, float resistance, int stacks);
-constexpr float UE_UNITS_TO_METERS = 100;
+
 constexpr float FALL_DAMAGE_THRESHOLD = 5 * UE_UNITS_TO_METERS; 
 constexpr float FALL_DAMAGE_FACTOR = 5; 
 
