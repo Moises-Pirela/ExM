@@ -8,6 +8,7 @@
 #include "Logging/LogMacros.h"
 #include "ExMCharacter.generated.h"
 
+class UExmStatsComponent;
 class UMovieSceneColorPropertySystem;
 class USpringArmComponent;
 class UExmEquipmentComponent;
@@ -109,6 +110,7 @@ class AExMCharacter : public ACharacter
 	float targetLeanLocAmount;
 	float targetStanceCapsuleHeight;
 	float targetStanceEyeHeight;
+	float stanceChangeAlpha;
 
 	EStances currentStance;
 	TEnumAsByte<EExMMovementMode> prevMovementMode;
@@ -133,11 +135,13 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category= "Components")
 	UExMHealthComponent* healthComponent;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category= "Components")
+	UExmStatsComponent* statsComponent;
+	
 protected:
 	virtual void BeginPlay() override;
 
 public:
-	/** Look Input Action */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	class UInputAction* LookAction;
 

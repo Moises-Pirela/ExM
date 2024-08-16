@@ -84,3 +84,12 @@ ExM/Binaries/Win64/UnrealEditor-ExM.patch_0.pdb
 ExM/Binaries/Win64/UnrealEditor-ExM.patch_1.exe
 ExM/Binaries/Win64/UnrealEditor-ExM.patch_1.pdb
 ExM/Binaries/Win64/UnrealEditor-ExM.pdb
+/ExM/Binaries
+ExM/Intermediate/Build/Win64/x64/ExMEditor/Development/DependencyCache.bin
+ExM/Intermediate/Build/Win64/x64/UnrealEditor/Development/ExM/ExMCharacter.cpp.dep.lc.json
+ExM/Intermediate/Build/Win64/x64/UnrealEditor/Development/ExM/ExMCharacter.cpp.lc.obj
+ExM/Intermediate/Build/Win64/x64/UnrealEditor/Development/ExM/UnrealEditor-ExM.dll.rsp.old
+ExM/Intermediate/Build/Win64/x64/UnrealEditor/Development/ExM/UnrealEditor-ExM.lib
+ExM/Intermediate/Build/Win64/x64/UnrealEditor/Development/ExM/UnrealEditor-ExM.lib.rsp.old
+ExM/Intermediate/Build/Win64/x64/UnrealEditor/Development/ExM/UnrealEditor-ExM.sup.exp
+ExM/Intermediate/Build/Win64/x64/UnrealEditor/Development/ExM/UnrealEditor-ExM.sup.lib
