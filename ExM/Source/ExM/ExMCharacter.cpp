@@ -81,7 +81,7 @@ void AExMCharacter::BeginPlay()
 	walkSpeed								= CalculateMovementSpeed(statsComponent->stats[STAT_DEXTERITY], walkSpeed, 1);
 	sprintSpeed								= walkSpeed * 2.5f;
 	crouchSpeed								= walkSpeed * 0.7f;
-	GetCharacterMovement()->JumpZVelocity	= CalculateJumpHeight(statsComponent->stats[STAT_STRENGTH], statsComponent->stats[STAT_DEXTERITY], GetCharacterMovement()->JumpZVelocity, 1);
+	GetCharacterMovement()->JumpZVelocity	= CalculateJumpHeight(statsComponent->stats[STAT_RESOLVE], statsComponent->stats[STAT_DEXTERITY], GetCharacterMovement()->JumpZVelocity, 1);
 }
 
 void AExMCharacter::Tick(float DeltaSeconds)
@@ -321,7 +321,7 @@ void AExMCharacter::PrimaryFire()
 		interactComponent->grabbedComponent = nullptr;
 		interactComponent->currentInteractionType = INTERACTION_NONE;
 
-		float throwStrength =  CalculateThrowStrength(statsComponent->stats[STAT_STRENGTH], grabbedComp->GetMass(), 1); //TODO: calculate modifiers
+		float throwStrength =  CalculateThrowStrength(statsComponent->stats[STAT_RESOLVE], grabbedComp->GetMass(), 1); //TODO: calculate modifiers
 		
 		grabbedComp->AddImpulse(throwDirection * throwStrength, NAME_None, true);
 		return;

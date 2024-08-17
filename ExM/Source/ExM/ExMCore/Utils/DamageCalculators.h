@@ -4,7 +4,7 @@
 #include "Exmortalis.h"
 
 UENUM(BlueprintType)
-enum EDamageTypes
+enum EDamageTypes : int
 {
 	DAMAGE_TYPE_KINETIC = 0,
 	DAMAGE_TYPE_BLUNT,
