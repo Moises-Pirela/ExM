@@ -15,6 +15,7 @@
 #include "ExMCore/Components/ExmEquipmentComponent.h"
 #include "ExMCore/Components/ExMHealthComponent.h"
 #include "ExMCore/Components/ExMInteractionComponent.h"
+#include "ExMCore/Components/ExmInventoryComponent.h"
 #include "ExMCore/Components/ExMJumpComponent.h"
 #include "ExMCore/Components/ExmStatsComponent.h"
 #include "ExMCore/Utils/DamageCalculators.h"
@@ -65,6 +66,7 @@ AExMCharacter::AExMCharacter()
 	jumpComponent		= CreateDefaultSubobject<UExMJumpComponent>("JumpComponent");
 	interactComponent	= CreateDefaultSubobject<UExMInteractionComponent>("InteractionComponent");
 	equipmentComponent	= CreateDefaultSubobject<UExmEquipmentComponent>("EquipmentComponent");
+	inventoryComponent	= CreateDefaultSubobject<UExmInventoryComponent>("Inventory");
 }
 
 void AExMCharacter::BeginPlay()
@@ -76,23 +78,25 @@ void AExMCharacter::BeginPlay()
 	targetStanceEyeHeight = standEyeHeight;
 
 	healthComponent = GetComponentByClass<UExMHealthComponent>();
-	statsComponent  = GetComponentByClass<UExmStatsComponent>();
-	
-	walkSpeed								= CalculateMovementSpeed(statsComponent->stats[STAT_DEXTERITY], walkSpeed, 1);
-	sprintSpeed								= walkSpeed * 2.5f;
-	crouchSpeed								= walkSpeed * 0.7f;
-	GetCharacterMovement()->JumpZVelocity	= CalculateJumpHeight(statsComponent->stats[STAT_RESOLVE], statsComponent->stats[STAT_DEXTERITY], GetCharacterMovement()->JumpZVelocity, 1);
+	statsComponent = GetComponentByClass<UExmStatsComponent>();
+
+	walkSpeed = CalculateMovementSpeed(statsComponent->stats[STAT_DEXTERITY], walkSpeed, 1);
+	sprintSpeed = walkSpeed * 2.5f;
+	crouchSpeed = walkSpeed * 0.7f;
+	GetCharacterMovement()->JumpZVelocity = CalculateJumpHeight(statsComponent->stats[STAT_STRENGTH],
+	                                                            statsComponent->stats[STAT_DEXTERITY],
+	                                                            GetCharacterMovement()->JumpZVelocity, 1);
 }
 
 void AExMCharacter::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
 
-	// if (healthComponent->IsDead())
-	// {
-	// 	targetLeanRotAmount = -60;
-	// 	targetLeanLocAmount = 0;
-	// }
+	if (healthComponent->IsDead())
+	{
+		targetLeanRotAmount = -60;
+		targetLeanLocAmount = 0;
+	}
 
 	FRotator targetRotation = FRotator(CameraRoot->GetRelativeRotation().Pitch, CameraRoot->GetRelativeRotation().Yaw,
 	                                   targetLeanRotAmount);
@@ -252,7 +256,8 @@ void AExMCharacter::StartStand()
 	if (currentStance == EStances::STANCE_CROUCHING)
 	{
 		GetWorld()->GetTimerManager().ClearTimer(checkCanStandTimerHandle);
-		GetWorld()->GetTimerManager().SetTimer(checkCanStandTimerHandle,this, &AExMCharacter::TryStand, CAN_STAND_DURATION, true);
+		GetWorld()->GetTimerManager().SetTimer(checkCanStandTimerHandle, this, &AExMCharacter::TryStand,
+		                                       CAN_STAND_DURATION, true);
 	}
 }
 
@@ -269,7 +274,7 @@ void AExMCharacter::TryStand()
 	float _stanceHeightDiff = crouchCapsuleHeight - standCapsuleHeight;
 	float _z = GetActorLocation().Z + crouchCapsuleHeight;
 	float alpha = targetStanceCapsuleHeight / GetCapsuleComponent()->GetUnscaledCapsuleHalfHeight();
-	float _lerpedHeight = (FMath::Lerp(0, _stanceHeightDiff,  alpha) * 1.1) + _z;
+	float _lerpedHeight = (FMath::Lerp(0, _stanceHeightDiff, alpha) * 1.1) + _z;
 	FVector _startTraceLocation = FVector(GetActorLocation().X, GetActorLocation().Y, _z);
 	FVector _endTraceLocation = FVector(GetActorLocation().X, GetActorLocation().Y, _lerpedHeight);
 
@@ -277,7 +282,8 @@ void AExMCharacter::TryStand()
 	FCollisionQueryParams params(NAME_None, false, this);
 	FCollisionShape sphereShape = FCollisionShape::MakeSphere(GetCapsuleComponent()->GetUnscaledCapsuleRadius());
 
-	if (GetWorld()->SweepSingleByChannel(hit, _startTraceLocation, _endTraceLocation, FQuat::Identity,ECC_Visibility, sphereShape, params))
+	if (GetWorld()->SweepSingleByChannel(hit, _startTraceLocation, _endTraceLocation, FQuat::Identity, ECC_Visibility,
+	                                     sphereShape, params))
 	{
 		return;
 	}
@@ -310,7 +316,7 @@ void AExMCharacter::StopLean(const FInputActionValue& value)
 
 void AExMCharacter::PrimaryFire()
 {
-	if (interactComponent->grabbedComponent)
+	if (interactComponent->currentInteractionType == INTERACTION_CARRY)
 	{
 		UPrimitiveComponent* grabbedComp = interactComponent->grabbedComponent;
 
@@ -321,13 +327,15 @@ void AExMCharacter::PrimaryFire()
 		interactComponent->grabbedComponent = nullptr;
 		interactComponent->currentInteractionType = INTERACTION_NONE;
 
-		float throwStrength =  CalculateThrowStrength(statsComponent->stats[STAT_RESOLVE], grabbedComp->GetMass(), 1); //TODO: calculate modifiers
-		
-		grabbedComp->AddImpulse(throwDirection * throwStrength, NAME_None, true);
-		return;
-	}
+		float throwStrength = CalculateThrowStrength(statsComponent->stats[STAT_STRENGTH], grabbedComp->GetMass(), 1);
+		//TODO: calculate modifiers
 
-	equipmentComponent->FireWeapon();
+		grabbedComp->AddImpulse(throwDirection * throwStrength, NAME_None, true);
+	}
+	else
+	{
+		equipmentComponent->FireWeapon();
+	}
 }
 
 void AExMCharacter::SecondaryFire()

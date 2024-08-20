@@ -1,6 +1,6 @@
 ﻿#pragma once
+#include "EntityContainer.h"
 #include "ExM/ExMCore/Components/BaseComponent.h"
-#include "ExM/ExMCore/Utils/Exmortalis.h"
 
 #include "ComponentArray.generated.h"
 
@@ -11,7 +11,7 @@ struct FComponentArray
 {
 	GENERATED_BODY()
 
-	UBaseComponent* components[MAX_ENTITIES];
+	UBaseComponent* components[MAX_ENTITY_COUNT];
 
 	void AddComponent(UBaseComponent* component, int entityId)
 	{

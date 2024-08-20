@@ -8,6 +8,7 @@
 #include "Logging/LogMacros.h"
 #include "ExMCharacter.generated.h"
 
+class UExmInventoryComponent;
 class UExmStatsComponent;
 class UMovieSceneColorPropertySystem;
 class USpringArmComponent;
@@ -137,6 +138,9 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category= "Components")
 	UExmStatsComponent* statsComponent;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category= "Components")
+	UExmInventoryComponent* inventoryComponent;
 	
 protected:
 	virtual void BeginPlay() override;

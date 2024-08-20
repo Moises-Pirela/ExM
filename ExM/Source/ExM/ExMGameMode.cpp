@@ -2,13 +2,20 @@
 
 #include "ExMGameMode.h"
 #include "ExMCharacter.h"
+#include "ExMCore\Core\EntityContainer.h"
 #include "UObject/ConstructorHelpers.h"
 
 AExMGameMode::AExMGameMode()
 	: Super()
 {
-	// set default pawn class to our Blueprinted character
 	static ConstructorHelpers::FClassFinder<APawn> PlayerPawnClassFinder(TEXT("/Game/FirstPerson/Blueprints/BP_FirstPersonCharacter"));
 	DefaultPawnClass = PlayerPawnClassFinder.Class;
 
+}
+
+void AExMGameMode::BeginPlay()
+{
+	Super::BeginPlay();
+
+	EntityContainer& entityManager = EntityContainer::instance();
 }

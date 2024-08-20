@@ -9,10 +9,8 @@ UENUM(BlueprintType)
 enum EStatTypes
 {
 	STAT_DEXTERITY			UMETA(DisplayName = "Dexterity"),
-	STAT_RESOLVE			UMETA(DisplayName = "Resolve"),
+	STAT_STRENGTH			UMETA(DisplayName = "Strength"),
 	STAT_INTELLIGENCE		UMETA(DisplayName = "Intelligence"),
-	STAT_VITALITY			UMETA(DisplayName = "Vitality"),
-	STAT_EXPERTISE			UMETA(DisplayName = "Expertise"),
 	STAT_MAX
 };
 

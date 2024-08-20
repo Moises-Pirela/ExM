@@ -12,12 +12,15 @@
             "c:\\repos\\necroteklabs\\exmortalis\\exm\\intermediate\\build\\win64\\unrealeditor\\inc\\exm\\uht\\exmhealthcomponent.generated.h",
             "c:\\repos\\necroteklabs\\exmortalis\\exm\\source\\exm\\exmcore\\components\\exmresistancescomponent.h",
             "c:\\repos\\necroteklabs\\exmortalis\\exm\\intermediate\\build\\win64\\unrealeditor\\inc\\exm\\uht\\exmresistancescomponent.generated.h",
+            "c:\\repos\\necroteklabs\\exmortalis\\exm\\source\\exm\\exmcore\\components\\exmstatscomponent.h",
+            "c:\\repos\\necroteklabs\\exmortalis\\exm\\intermediate\\build\\win64\\unrealeditor\\inc\\exm\\uht\\exmstatscomponent.generated.h",
             "c:\\repos\\necroteklabs\\exmortalis\\exm\\source\\exm\\exmcore\\utils\\damagecalculators.h",
             "c:\\program files\\microsoft visual studio\\2022\\community\\vc\\tools\\msvc\\14.38.33130\\include\\map",
             "c:\\program files\\microsoft visual studio\\2022\\community\\vc\\tools\\msvc\\14.38.33130\\include\\xtree",
             "c:\\program files\\microsoft visual studio\\2022\\community\\vc\\tools\\msvc\\14.38.33130\\include\\xnode_handle.h",
             "c:\\program files\\microsoft visual studio\\2022\\community\\vc\\tools\\msvc\\14.38.33130\\include\\xpolymorphic_allocator.h",
-            "c:\\repos\\necroteklabs\\exmortalis\\exm\\source\\exm\\exmcore\\utils\\exmortalis.h"
+            "c:\\repos\\necroteklabs\\exmortalis\\exm\\source\\exm\\exmcore\\utils\\exmortalis.h",
+            "c:\\repos\\necroteklabs\\exmortalis\\exm\\source\\exm\\exmcore\\utils\\stathelpers.h"
         ],
         "ImportedModules": [],
         "ImportedHeaderUnits": []

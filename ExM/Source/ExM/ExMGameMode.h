@@ -6,6 +6,9 @@
 #include "GameFramework/GameModeBase.h"
 #include "ExMGameMode.generated.h"
 
+
+class EntityContainer;
+
 UCLASS(minimalapi)
 class AExMGameMode : public AGameModeBase
 {
@@ -13,7 +16,11 @@ class AExMGameMode : public AGameModeBase
 
 public:
 	AExMGameMode();
+
+	virtual void BeginPlay() override;
 };
+
+
 
 
 
