@@ -6,6 +6,7 @@
 #include "EntityComponent.h"
 #include "EntityComponentConfig.h"
 #include "ExM/ExMCore/Configs/EntityConfig.h"
+#include "ExM/ExMCore/Utils/Logger.h"
 
 void EntityContainer::CreateEntity(UEntityConfig* entityConfig, UEntity* startingEntity)
 {
@@ -34,21 +35,15 @@ void EntityContainer::CreateEntity(UEntityConfig* entityConfig, UEntity* startin
 		UStruct* componentType = entityConfig->componentConfigs[i]->GetComponentTypeId();
 		if (!componentTypeIdMap.Contains(componentType))
 		{
-			GEngine->AddOnScreenDebugMessage(
-				-1,
-				5.0f,
-				FColor::Red,
-				FString::Printf(TEXT("Component type not found: %s %s"), *componentType->GetName(), *entityConfig->componentConfigs[i]->GetName())
-			);
+
+			auto message = FString::Printf(TEXT("Component type not found: %s %s"), *componentType->GetName(), *entityConfig->componentConfigs[i]->GetName());
+			NecroLog(message, ELogLevel::LOG_ERROR);
+			
 			continue;
 		}
 
-		GEngine->AddOnScreenDebugMessage(
-				-1,
-				5.0f,
-				FColor::Green,
-				FString::Printf(TEXT("Component type found: %s %s"), *componentType->GetName(), *entityConfig->componentConfigs[i]->GetName())
-			);
+		auto message = FString::Printf(TEXT("Component type found: %s %s"), *componentType->GetName(), *entityConfig->componentConfigs[i]->GetName());
+		NecroLog(message, ELogLevel::LOG_DEBUG);
 		
 		int componentTypeId = componentTypeIdMap[componentType];
 		componentArrays[componentTypeId]->AddComponent(component, entityId);

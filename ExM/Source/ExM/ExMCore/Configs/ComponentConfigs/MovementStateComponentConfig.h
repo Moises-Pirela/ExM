@@ -1,24 +1,21 @@
 ﻿#pragma once
 
-
 #include "ExM/ExMCore/Core/EntityComponent.h"
 #include "ExM/ExMCore/Core/EntityComponentConfig.h"
-#include "HealthComponentConfig.generated.h"
+#include "MovementStateComponentConfig.generated.h"
 
 UCLASS(EditInlineNew, BlueprintType)
-class EXM_API  UHealthComponentConfig : public UEntityComponentConfigBase {
+class EXM_API UMovementStateComponentConfig : public UEntityComponentConfigBase {
 	
 	GENERATED_BODY()
 
 public:
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Health Config")
-	float initialMaxHealth;
 
 	virtual FEntityComponent* CreateComponent() override {
-		return new FHealthComponent();
+		return new FMovementStateComponent();
 	};
 
 	virtual UStruct* GetComponentTypeId() override {
-		return FHealthComponent::StaticStruct();
+		return FMovementStateComponent::StaticStruct();
 	};
 };

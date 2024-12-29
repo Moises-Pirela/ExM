@@ -127,9 +127,6 @@
 		UPROPERTY(EditAnywhere, BlueprintReadOnly, Category= "Components")
 		UExmStatsComponent* statsComponent;
 
-		UPROPERTY(EditAnywhere, BlueprintReadOnly, Category= "Components")
-		UExmInventoryComponent* inventoryComponent;
-
 		UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Crouch")
 		float crouchAlpha;
 

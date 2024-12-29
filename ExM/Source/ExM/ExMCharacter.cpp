@@ -14,7 +14,6 @@
 #include "ExMCore/Components/ExmEquipmentComponent.h"
 #include "ExMCore/Components/ExMHealthComponent.h"
 #include "ExMCore/Components/ExMInteractionComponent.h"
-#include "ExMCore/Components/ExmInventoryComponent.h"
 #include "ExMCore/Components/ExMJumpComponent.h"
 #include "ExMCore/Components/ExmStatsComponent.h"
 #include "ExMCore/Utils/DamageCalculators.h"
@@ -65,7 +64,6 @@ AExMCharacter::AExMCharacter()
 	jumpComponent = CreateDefaultSubobject<UExMJumpComponent>("JumpComponent");
 	interactComponent = CreateDefaultSubobject<UExMInteractionComponent>("InteractionComponent");
 	equipmentComponent = CreateDefaultSubobject<UExmEquipmentComponent>("EquipmentComponent");
-	inventoryComponent = CreateDefaultSubobject<UExmInventoryComponent>("Inventory");
 }
 
 void AExMCharacter::BeginPlay()

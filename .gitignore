@@ -104,3 +104,14 @@ ExM/Intermediate/Build/Win64/x64/ExMEditor/Development/DependencyCache.bin
 ExM/Intermediate/Build/Win64/UnrealEditor/Inc/ExM/UHT/ExMHealthComponent.generated.h
 ExM/Intermediate/Build/Win64/UnrealEditor/Inc/ExM/UHT/DamageCalculators.generated.h
 ExM/Binaries/Win64/UnrealEditor-ExM.pdb
+/ExM/Binaries
+ExM/Binaries/Win64/UnrealEditor-ExM.patch_0.exe
+ExM/Binaries/Win64/UnrealEditor-ExM.patch_0.pdb
+ExM/Binaries/Win64/UnrealEditor-ExM.patch_1.exe
+ExM/Binaries/Win64/UnrealEditor-ExM.patch_1.pdb
+ExM/Binaries/Win64/UnrealEditor-ExM.patch_2.exe
+ExM/Binaries/Win64/UnrealEditor-ExM.patch_2.pdb
+ExM/Binaries/Win64/UnrealEditor-ExM.patch_3.exe
+ExM/Binaries/Win64/UnrealEditor-ExM.patch_3.pdb
+ExM/Binaries/Win64/UnrealEditor-ExM.pdb
+/ExM/Intermediate

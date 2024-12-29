@@ -36,3 +36,31 @@ USTRUCT()
 struct FPlayerTag : public FEntityComponent {
 	GENERATED_BODY()
 };
+
+USTRUCT()
+struct FWeaponComponent : public FEntityComponent {
+	GENERATED_BODY()
+};
+
+USTRUCT(BlueprintType)
+struct FInventoryItemSlot  {
+	GENERATED_BODY()
+	int configId;
+	int stacks;
+};
+
+USTRUCT()
+struct FInventoryComponent : public FEntityComponent {
+	GENERATED_BODY()
+	TArray<FInventoryItemSlot> inventory;
+};
+
+USTRUCT()
+struct FEquipmentComponent : public FEntityComponent {
+	GENERATED_BODY()
+	int equippedEntityId;
+	int prevEquippedEntityId;
+};
+
+
+
