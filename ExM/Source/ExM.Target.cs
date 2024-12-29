@@ -11,5 +11,7 @@ public class ExMTarget : TargetRules
 		DefaultBuildSettings = BuildSettingsVersion.V5;
 		IncludeOrderVersion = EngineIncludeOrderVersion.Unreal5_4;
 		ExtraModuleNames.Add("ExM");
+		ExtraModuleNames.Add("EntityConfigEditor");
+		ExtraModuleNames.Add("ProceduralDungeon");
 	}
 }

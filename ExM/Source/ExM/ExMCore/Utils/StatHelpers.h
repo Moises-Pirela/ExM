@@ -1,4 +1,5 @@
 ﻿#pragma once
+#include "Exmortalis.h"
 
 inline float fastSqrt(float number)
 {
@@ -39,6 +40,19 @@ constexpr float CalculateMovementSpeed(int dexterity, float baseWalkSpeed, float
 	float movementSpeed = baseWalkSpeed * speedMultiplier;
 	movementSpeed *= modifiers;
 	return movementSpeed;
+}
+
+constexpr float CalculateReloadSpeed(int dexterity, int intelligence, float modifiers)
+{
+	constexpr float dexterityWeight = 0.7f;
+	constexpr float intelligenceWeight = 0.3f;
+	constexpr float maxReloadSpeed = 2.0f;
+
+	float baseReloadSpeed = (dexterity * dexterityWeight + intelligence * intelligenceWeight) / MAX_ATTRIBUTE_VALUE;
+
+	float finalReloadSpeed = baseReloadSpeed * modifiers;
+
+	return FMath::Clamp(finalReloadSpeed, 0.0f, maxReloadSpeed);
 }
 
 constexpr float CalculateJumpHeight(int strength, int dexterity, float baseJumpHeight, float modifiers)

@@ -1,15 +1,21 @@
 ﻿#include "EntityContainer.h"
 
 #include "ComponentArray.h"
+#include "CreateEntityEvent.h"
 #include "Entity.h"
+#include "EntityComponent.h"
+#include "EntityComponentConfig.h"
+#include "ExM/ExMCore/Configs/EntityConfig.h"
 
-void EntityContainer::CreateEntity(UEntity* entity)
+void EntityContainer::CreateEntity(UEntityConfig* entityConfig, UEntity* startingEntity)
 {
 	int entityId = -1;
-	
-	if (recycledEntityId == -1)
+
+	FEntity entity = FEntity();
+
+	if (lastRecycledEntityId != -1)
 	{
-		entityId = recycledEntityId;
+		entityId = lastRecycledEntityId;
 	}
 	else
 	{
@@ -17,37 +23,97 @@ void EntityContainer::CreateEntity(UEntity* entity)
 		availableEntityId++;
 	}
 
-	TArray<UBaseComponent*> _components = entity->GetComponents();
-	uint32 componentCount =  _components.Num();
-	EComponentTypes* _componentTypes = new EComponentTypes[componentCount];
+	entity.id = entityId;
 
-	for (uint32 i = 0; i < componentCount; i++)
+	auto _components = entityConfig->componentConfigs;
+	int componentCount = _components.Num();
+
+	for (int i = 0; i < componentCount; i++)
 	{
-		_componentTypes[i] = _components[i]->GetComponentType();
+		auto component = entityConfig->componentConfigs[i]->CreateComponent();
+		UStruct* componentType = entityConfig->componentConfigs[i]->GetComponentTypeId();
+		if (!componentTypeIdMap.Contains(componentType))
+		{
+			GEngine->AddOnScreenDebugMessage(
+				-1,
+				5.0f,
+				FColor::Red,
+				FString::Printf(TEXT("Component type not found: %s %s"), *componentType->GetName(), *entityConfig->componentConfigs[i]->GetName())
+			);
+			continue;
+		}
 
-		componentArrays[_components[i]->GetComponentType()]->AddComponent(_components[i], entityId);
+		GEngine->AddOnScreenDebugMessage(
+				-1,
+				5.0f,
+				FColor::Green,
+				FString::Printf(TEXT("Component type found: %s %s"), *componentType->GetName(), *entityConfig->componentConfigs[i]->GetName())
+			);
+		
+		int componentTypeId = componentTypeIdMap[componentType];
+		componentArrays[componentTypeId]->AddComponent(component, entityId);
+		entity.componentSignature.AddFlag(componentTypeId);
 	}
 
-	entity->entityFlags = new FEntityFlags();
-	entity->componentSignature = new FComponentFlags (_componentTypes, componentCount);
+	entity.entityFlags.AddFlag(ENTITY_STATE_ACTIVE);
+	entity.entityFlags.RemoveFlag(ENTITY_STATE_INACTIVE);
+	
+	entities[entityId] = entity;
 
-	entity->entityFlags->AddFlag(ENTITY_STATE_ACTIVE);
-	entity->entityFlags->RemoveFlag(ENTITY_STATE_INACTIVE);
-
-	delete _componentTypes;
+	for (int i = 0; i < entityCreateObservers.Num(); i++)
+	{
+		entityCreateObservers[i](entityConfig, entityId, startingEntity);
+	}
 }
 
-void EntityContainer::RemoveEntity(uint32 entityId)
+
+void EntityContainer::KillEntity(int entityId)
 {
-	UEntity* entity = entities[entityId];
-
-	entity->entityFlags->AddFlag(ENTITY_STATE_DEAD);
-	
-	TArray<UBaseComponent*> _components = entity->GetComponents();
-	uint32 componentCount =  _components.Num();
-
-	for (uint32 i = 0; i < componentCount; i++)
+	for (int componentTypeId = 0; componentTypeId < MAX_COMPONENT_TYPES; ++componentTypeId)
 	{
-		componentArrays[_components[i]->GetComponentType()]->RemoveComponent(entityId);
+		if (entities[entityId].componentSignature.HasFlag(componentTypeId))
+		{
+			if (componentArrays[componentTypeId])
+			{
+				componentArrays[componentTypeId]->RemoveComponent(entityId);
+			}
+		}
 	}
+	
+	entities[entityId] = FEntity::Empty();
+	lastRecycledEntityId = entityId;
+	
+	for (int i = 0; i < entityKillObservers.Num(); i++)
+	{
+		entityKillObservers[i](entityId);
+	}
+	
+}
+
+void EntityContainer::ProcessEvents()
+{
+	for (CreateEntityEvent _event : createEntityEvents)
+	{
+		CreateEntity(_event.pConfig, _event.pUnrealEntity);
+	}
+	
+	createEntityEvents.Empty();
+}
+
+template <typename T>
+void EntityContainer::AddComponent(int32 entityID, const T& componentData)
+{
+	UStruct* _componentClass = T::StaticStruct();
+	int32 _componentTypeId = *componentTypeIdMap.Find(_componentClass);
+
+	componentArrays[_componentTypeId]->components[entityID] = componentData;
+}
+
+template <typename T>
+T* EntityContainer::GetComponent(int32 entityID)
+{
+	UStruct* _componentClass = T::StaticStruct();
+	int32 _componentTypeId = *componentTypeIdMap.Find(_componentClass);
+	
+	return static_cast<T*>(componentArrays[_componentTypeId]->components[entityID]);
 }

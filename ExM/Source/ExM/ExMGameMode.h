@@ -3,10 +3,15 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "ExMCore/Utils/Exmortalis.h"
 #include "GameFramework/GameModeBase.h"
 #include "ExMGameMode.generated.h"
 
 
+class UEntitySubsystem;
+class UEntity;
+struct FComponentArray;
+class UExmStatsComponent;
 class EntityContainer;
 
 UCLASS(minimalapi)
@@ -17,7 +22,15 @@ class AExMGameMode : public AGameModeBase
 public:
 	AExMGameMode();
 
+	UEntitySubsystem *entitySubsystem;
+
 	virtual void BeginPlay() override;
+
+	virtual void Tick(float DeltaSeconds) override;
+
+private:
+
+	void ProcessBuffs(FComponentArray* componentArray, UEntity* entities[MAX_ENTITY_COUNT]);
 };
 
 

@@ -4,6 +4,7 @@
 #include "ExM/ExMCore/Components/BaseComponent.h"
 #include "Entity.generated.h"
 
+class UEntityConfig;
 class UBaseComponent;
 
 UENUM(BlueprintType)
@@ -49,7 +50,7 @@ struct FComponentFlags
 {
 	GENERATED_BODY()
 
-	uint32 value;
+	int value;
 
 	FComponentFlags(): value(0)
 	{
@@ -65,21 +66,45 @@ struct FComponentFlags
 		}
 	}
 
-	void AddFlag(const uint32 flag)
+	void AddFlag(const int flag)
 	{
-		value |= (1 << flag);
+		value |= flag; 
 	}
 
-	void RemoveFlag(const uint32 flag)
+	void RemoveFlag(const int flag)
 	{
-		value &= ~(1 << flag);
+		value &= ~flag; 
 	}
 
-	bool HasFlag(const uint32 flag)
+	bool HasFlag(const int flag) const
 	{
-		return (value & (1 << flag)) != 0;
+		return (value & flag) != 0; 
+	}
+
+	
+};
+
+struct FEntity {
+
+	FEntity() {
+		id = -1;
+		entityFlags = FEntityFlags();
+		componentSignature = FComponentFlags();
 	}
 	
+	int id;
+
+	FEntityFlags entityFlags;
+	FComponentFlags componentSignature;
+
+	static FEntity Empty() {
+		return FEntity();
+	}
+
+	bool HasComponent(const int flag)
+	{
+		return componentSignature.HasFlag(flag);
+	}
 };
 
 UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
@@ -88,21 +113,22 @@ class UEntity : public UActorComponent
 	GENERATED_BODY()
 
 public:
-	UEntity(): entityFlags(nullptr), componentSignature(nullptr) { entityId = -1; };
-
+	UEntity() { entityId = -1; };
+	
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	int entityId;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UEntityConfig* entityConfig;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	bool bIsStartingEntity;
 
-	FEntityFlags *entityFlags;
-	FComponentFlags *componentSignature;
-
-	TArray<UBaseComponent*> GetComponents()
-	{
-		auto components = TArray<UBaseComponent*>{};
-
-		GetOwner()->GetComponents<UBaseComponent*>(components);
-		
-		return components;
-	}
+	void SetupEntity();
+	
+private:
+	virtual void BeginPlay() override;
+	virtual void DestroyComponent(bool bPromoteChildren) override;
 };
+
+
 
 

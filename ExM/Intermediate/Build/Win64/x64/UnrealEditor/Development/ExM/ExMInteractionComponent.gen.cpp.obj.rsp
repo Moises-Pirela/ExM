@@ -1,11 +1,13 @@
 "C:\Repos\NecrotekLabs\ExMORTALIS\ExM\Intermediate\Build\Win64\UnrealEditor\Inc\ExM\UHT\ExMInteractionComponent.gen.cpp"
-/FI"..\Intermediate\Build\Win64\x64\UnrealEditor\Development\UnrealEd\SharedPCH.UnrealEd.Project.ValApi.Cpp20.h"
+/FI"C:\Repos\NecrotekLabs\ExMORTALIS\ExM\Intermediate\Build\Win64\x64\ExMEditor\Development\UnrealEd\SharedPCH.UnrealEd.Project.ValApi.Cpp20.InclOrderUnreal5_4.h"
 /FI"C:\Repos\NecrotekLabs\ExMORTALIS\ExM\Intermediate\Build\Win64\x64\UnrealEditor\Development\ExM\Definitions.ExM.h"
-/Yu"..\Intermediate\Build\Win64\x64\UnrealEditor\Development\UnrealEd\SharedPCH.UnrealEd.Project.ValApi.Cpp20.h"
-/Fp"..\Intermediate\Build\Win64\x64\UnrealEditor\Development\UnrealEd\SharedPCH.UnrealEd.Project.ValApi.Cpp20.h.pch"
+/Yu"C:\Repos\NecrotekLabs\ExMORTALIS\ExM\Intermediate\Build\Win64\x64\ExMEditor\Development\UnrealEd\SharedPCH.UnrealEd.Project.ValApi.Cpp20.InclOrderUnreal5_4.h"
+/Fp"C:\Repos\NecrotekLabs\ExMORTALIS\ExM\Intermediate\Build\Win64\x64\ExMEditor\Development\UnrealEd\SharedPCH.UnrealEd.Project.ValApi.Cpp20.InclOrderUnreal5_4.h.pch"
 /Fo"C:\Repos\NecrotekLabs\ExMORTALIS\ExM\Intermediate\Build\Win64\x64\UnrealEditor\Development\ExM\ExMInteractionComponent.gen.cpp.obj"
+/experimental:log "C:\Repos\NecrotekLabs\ExMORTALIS\ExM\Intermediate\Build\Win64\x64\UnrealEditor\Development\ExM\ExMInteractionComponent.gen.cpp.sarif"
 /sourceDependencies "C:\Repos\NecrotekLabs\ExMORTALIS\ExM\Intermediate\Build\Win64\x64\UnrealEditor\Development\ExM\ExMInteractionComponent.gen.cpp.dep.json"
 @"C:\Repos\NecrotekLabs\ExMORTALIS\ExM\Intermediate\Build\Win64\x64\UnrealEditor\Development\ExM\ExM.Shared.rsp"
+/d2ssa-cfg-question-
 /Zc:inline
 /nologo
 /Oi

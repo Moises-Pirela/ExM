@@ -75,15 +75,15 @@ UEnum* Z_Construct_UEnum_ExM_EDamageTypes()
 // End Enum EDamageTypes
 
 // Begin Registration
-struct Z_CompiledInDeferFile_FID_NecrotekLabs_ExMORTALIS_ExM_Source_ExM_ExMCore_Utils_DamageCalculators_h_Statics
+struct Z_CompiledInDeferFile_FID_Repos_NecrotekLabs_ExMORTALIS_ExM_Source_ExM_ExMCore_Utils_DamageCalculators_h_Statics
 {
 	static constexpr FEnumRegisterCompiledInInfo EnumInfo[] = {
 		{ EDamageTypes_StaticEnum, TEXT("EDamageTypes"), &Z_Registration_Info_UEnum_EDamageTypes, CONSTRUCT_RELOAD_VERSION_INFO(FEnumReloadVersionInfo, 3325920591U) },
 	};
 };
-static FRegisterCompiledInInfo Z_CompiledInDeferFile_FID_NecrotekLabs_ExMORTALIS_ExM_Source_ExM_ExMCore_Utils_DamageCalculators_h_982827743(TEXT("/Script/ExM"),
+static FRegisterCompiledInInfo Z_CompiledInDeferFile_FID_Repos_NecrotekLabs_ExMORTALIS_ExM_Source_ExM_ExMCore_Utils_DamageCalculators_h_982827743(TEXT("/Script/ExM"),
 	nullptr, 0,
 	nullptr, 0,
-	Z_CompiledInDeferFile_FID_NecrotekLabs_ExMORTALIS_ExM_Source_ExM_ExMCore_Utils_DamageCalculators_h_Statics::EnumInfo, UE_ARRAY_COUNT(Z_CompiledInDeferFile_FID_NecrotekLabs_ExMORTALIS_ExM_Source_ExM_ExMCore_Utils_DamageCalculators_h_Statics::EnumInfo));
+	Z_CompiledInDeferFile_FID_Repos_NecrotekLabs_ExMORTALIS_ExM_Source_ExM_ExMCore_Utils_DamageCalculators_h_Statics::EnumInfo, UE_ARRAY_COUNT(Z_CompiledInDeferFile_FID_Repos_NecrotekLabs_ExMORTALIS_ExM_Source_ExM_ExMCore_Utils_DamageCalculators_h_Statics::EnumInfo));
 // End Registration
 PRAGMA_ENABLE_DEPRECATION_WARNINGS

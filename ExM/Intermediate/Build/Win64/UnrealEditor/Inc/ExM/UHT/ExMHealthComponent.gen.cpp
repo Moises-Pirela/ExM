@@ -6,6 +6,7 @@
 
 #include "UObject/GeneratedCppIncludes.h"
 #include "ExM/ExMCore/Components/ExMHealthComponent.h"
+#include "ExM/ExMCore/Buffables.h"
 PRAGMA_DISABLE_DEPRECATION_WARNINGS
 void EmptyLinkFunctionForGeneratedCodeExMHealthComponent() {}
 
@@ -16,6 +17,7 @@ EXM_API UClass* Z_Construct_UClass_UExMHealthComponent();
 EXM_API UClass* Z_Construct_UClass_UExMHealthComponent_NoRegister();
 EXM_API UEnum* Z_Construct_UEnum_ExM_EDamageTypes();
 EXM_API UFunction* Z_Construct_UDelegateFunction_ExM_OnDieSignature__DelegateSignature();
+EXM_API UScriptStruct* Z_Construct_UScriptStruct_FBuffableFloat();
 EXM_API UScriptStruct* Z_Construct_UScriptStruct_FDamageData();
 UPackage* Z_Construct_UPackage__Script_ExM();
 // End Cross Module References
@@ -152,7 +154,7 @@ struct Z_Construct_UClass_UExMHealthComponent_Statics
 		{ "ModuleRelativePath", "ExMCore/Components/ExMHealthComponent.h" },
 	};
 #endif // WITH_METADATA
-	static const UECodeGen_Private::FFloatPropertyParams NewProp_maxHealth;
+	static const UECodeGen_Private::FStructPropertyParams NewProp_maxHealth;
 	static const UECodeGen_Private::FMulticastDelegatePropertyParams NewProp_OnDie;
 	static const UECodeGen_Private::FFloatPropertyParams NewProp_currentHealth;
 	static const UECodeGen_Private::FPropertyParamsBase* const PropPointers[];
@@ -162,7 +164,7 @@ struct Z_Construct_UClass_UExMHealthComponent_Statics
 	};
 	static const UECodeGen_Private::FClassParams ClassParams;
 };
-const UECodeGen_Private::FFloatPropertyParams Z_Construct_UClass_UExMHealthComponent_Statics::NewProp_maxHealth = { "maxHealth", nullptr, (EPropertyFlags)0x0010000000000005, UECodeGen_Private::EPropertyGenFlags::Float, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(UExMHealthComponent, maxHealth), METADATA_PARAMS(UE_ARRAY_COUNT(NewProp_maxHealth_MetaData), NewProp_maxHealth_MetaData) };
+const UECodeGen_Private::FStructPropertyParams Z_Construct_UClass_UExMHealthComponent_Statics::NewProp_maxHealth = { "maxHealth", nullptr, (EPropertyFlags)0x0010000000000005, UECodeGen_Private::EPropertyGenFlags::Struct, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(UExMHealthComponent, maxHealth), Z_Construct_UScriptStruct_FBuffableFloat, METADATA_PARAMS(UE_ARRAY_COUNT(NewProp_maxHealth_MetaData), NewProp_maxHealth_MetaData) }; // 2828805209
 const UECodeGen_Private::FMulticastDelegatePropertyParams Z_Construct_UClass_UExMHealthComponent_Statics::NewProp_OnDie = { "OnDie", nullptr, (EPropertyFlags)0x0010000010080000, UECodeGen_Private::EPropertyGenFlags::InlineMulticastDelegate, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(UExMHealthComponent, OnDie), Z_Construct_UDelegateFunction_ExM_OnDieSignature__DelegateSignature, METADATA_PARAMS(UE_ARRAY_COUNT(NewProp_OnDie_MetaData), NewProp_OnDie_MetaData) }; // 3904414349
 const UECodeGen_Private::FFloatPropertyParams Z_Construct_UClass_UExMHealthComponent_Statics::NewProp_currentHealth = { "currentHealth", nullptr, (EPropertyFlags)0x0010000000020015, UECodeGen_Private::EPropertyGenFlags::Float, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(UExMHealthComponent, currentHealth), METADATA_PARAMS(UE_ARRAY_COUNT(NewProp_currentHealth_MetaData), NewProp_currentHealth_MetaData) };
 const UECodeGen_Private::FPropertyParamsBase* const Z_Construct_UClass_UExMHealthComponent_Statics::PropPointers[] = {
@@ -208,18 +210,18 @@ UExMHealthComponent::~UExMHealthComponent() {}
 // End Class UExMHealthComponent
 
 // Begin Registration
-struct Z_CompiledInDeferFile_FID_NecrotekLabs_ExMORTALIS_ExM_Source_ExM_ExMCore_Components_ExMHealthComponent_h_Statics
+struct Z_CompiledInDeferFile_FID_Repos_NecrotekLabs_ExMORTALIS_ExM_Source_ExM_ExMCore_Components_ExMHealthComponent_h_Statics
 {
 	static constexpr FStructRegisterCompiledInInfo ScriptStructInfo[] = {
 		{ FDamageData::StaticStruct, Z_Construct_UScriptStruct_FDamageData_Statics::NewStructOps, TEXT("DamageData"), &Z_Registration_Info_UScriptStruct_DamageData, CONSTRUCT_RELOAD_VERSION_INFO(FStructReloadVersionInfo, sizeof(FDamageData), 2290297756U) },
 	};
 	static constexpr FClassRegisterCompiledInInfo ClassInfo[] = {
-		{ Z_Construct_UClass_UExMHealthComponent, UExMHealthComponent::StaticClass, TEXT("UExMHealthComponent"), &Z_Registration_Info_UClass_UExMHealthComponent, CONSTRUCT_RELOAD_VERSION_INFO(FClassReloadVersionInfo, sizeof(UExMHealthComponent), 808910538U) },
+		{ Z_Construct_UClass_UExMHealthComponent, UExMHealthComponent::StaticClass, TEXT("UExMHealthComponent"), &Z_Registration_Info_UClass_UExMHealthComponent, CONSTRUCT_RELOAD_VERSION_INFO(FClassReloadVersionInfo, sizeof(UExMHealthComponent), 2409253982U) },
 	};
 };
-static FRegisterCompiledInInfo Z_CompiledInDeferFile_FID_NecrotekLabs_ExMORTALIS_ExM_Source_ExM_ExMCore_Components_ExMHealthComponent_h_2391316222(TEXT("/Script/ExM"),
-	Z_CompiledInDeferFile_FID_NecrotekLabs_ExMORTALIS_ExM_Source_ExM_ExMCore_Components_ExMHealthComponent_h_Statics::ClassInfo, UE_ARRAY_COUNT(Z_CompiledInDeferFile_FID_NecrotekLabs_ExMORTALIS_ExM_Source_ExM_ExMCore_Components_ExMHealthComponent_h_Statics::ClassInfo),
-	Z_CompiledInDeferFile_FID_NecrotekLabs_ExMORTALIS_ExM_Source_ExM_ExMCore_Components_ExMHealthComponent_h_Statics::ScriptStructInfo, UE_ARRAY_COUNT(Z_CompiledInDeferFile_FID_NecrotekLabs_ExMORTALIS_ExM_Source_ExM_ExMCore_Components_ExMHealthComponent_h_Statics::ScriptStructInfo),
+static FRegisterCompiledInInfo Z_CompiledInDeferFile_FID_Repos_NecrotekLabs_ExMORTALIS_ExM_Source_ExM_ExMCore_Components_ExMHealthComponent_h_2526057503(TEXT("/Script/ExM"),
+	Z_CompiledInDeferFile_FID_Repos_NecrotekLabs_ExMORTALIS_ExM_Source_ExM_ExMCore_Components_ExMHealthComponent_h_Statics::ClassInfo, UE_ARRAY_COUNT(Z_CompiledInDeferFile_FID_Repos_NecrotekLabs_ExMORTALIS_ExM_Source_ExM_ExMCore_Components_ExMHealthComponent_h_Statics::ClassInfo),
+	Z_CompiledInDeferFile_FID_Repos_NecrotekLabs_ExMORTALIS_ExM_Source_ExM_ExMCore_Components_ExMHealthComponent_h_Statics::ScriptStructInfo, UE_ARRAY_COUNT(Z_CompiledInDeferFile_FID_Repos_NecrotekLabs_ExMORTALIS_ExM_Source_ExM_ExMCore_Components_ExMHealthComponent_h_Statics::ScriptStructInfo),
 	nullptr, 0);
 // End Registration
 PRAGMA_ENABLE_DEPRECATION_WARNINGS

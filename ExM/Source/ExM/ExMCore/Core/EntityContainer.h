@@ -1,38 +1,52 @@
 ﻿#pragma once
 #include "ComponentArray.h"
+#include "CoreMinimal.h"
+#include "CreateEntityEvent.h"
+#include "ExM/ExMCore/Utils/Exmortalis.h"
 #include "ExM/ExMCore/Components/BaseComponent.h"
+#include "ExM/ExMCore/Core/Entity.h"
 
+class UEntityConfig;
 
-struct FComponentArray;
-class UEntity;
+static int MAX_COMPONENT_TYPES;
 
-constexpr uint32 MAX_ENTITY_COUNT = 100;
+typedef void (*OnKillEntity)(int entityId);
 
-class EntityContainer
-{
+class EntityContainer {
 public:
+	UEntity*                                               unrealEntities[MAX_ENTITY_COUNT];
+	FEntity                                                entities[MAX_ENTITY_COUNT];
+	TArray<FComponentArray*>                               componentArrays;
+	TArray<CreateEntityEvent>                              createEntityEvents;
+	TMap<UStruct*, int>                                    componentTypeIdMap;
+	TArray<TFunction<void(UEntityConfig*, int, UEntity*)>> entityCreateObservers;
+	TArray<TFunction<void(int)>>                           entityKillObservers;
 
-	UEntity *entities[MAX_ENTITY_COUNT];
-	FComponentArray *componentArrays[COMPONENT_MAX];
-	
-	EntityContainer(): entities{}, componentArrays{}, availableEntityId(0), recycledEntityId(-1)
+	EntityContainer(): unrealEntities{}, componentArrays{}, availableEntityId(0), lastRecycledEntityId(-1)
 	{
-		for (int i =0 ; i < COMPONENT_MAX; i++)
+		for(int i = 0; i < MAX_ENTITY_COUNT; i++)
 		{
-			componentArrays[i] = new FComponentArray{};
+			entities[i] = FEntity();
+		}
+
+		for(int i = 0; i < MAX_COMPONENT_TYPES; i++)
+		{
+			componentArrays.Add(new FComponentArray());
 		}
 	}
 
-	void CreateEntity(UEntity *entity);
+	void CreateEntity(UEntityConfig* entityConfig, UEntity* startingEntity);
 
-	void RemoveEntity(uint32 entityId);
+	void KillEntity(int entityId);
 
-	static EntityContainer& instance()
-	{
-		static EntityContainer *instance = new EntityContainer();
-		return *instance;
-	}
+	void ProcessEvents();
+
+	template <typename T>
+	void AddComponent(int32 entityID, const T& componentData);
+	template <typename T>
+	T* GetComponent(int32 entityID);
+
 private :
-	uint32 availableEntityId;
-	uint32 recycledEntityId;
+	int availableEntityId;
+	int lastRecycledEntityId;
 };

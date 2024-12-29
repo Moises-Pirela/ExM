@@ -16,7 +16,7 @@ PRAGMA_DISABLE_DEPRECATION_WARNINGS
 #define EXM_DamageCalculators_generated_h
 
 #undef CURRENT_FILE_ID
-#define CURRENT_FILE_ID FID_NecrotekLabs_ExMORTALIS_ExM_Source_ExM_ExMCore_Utils_DamageCalculators_h
+#define CURRENT_FILE_ID FID_Repos_NecrotekLabs_ExMORTALIS_ExM_Source_ExM_ExMCore_Utils_DamageCalculators_h
 
 
 #define FOREACH_ENUM_EDAMAGETYPES(op) \

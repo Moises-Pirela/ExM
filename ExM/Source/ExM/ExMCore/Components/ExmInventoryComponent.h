@@ -9,7 +9,8 @@ USTRUCT(BlueprintType)
 struct FInventoryItem
 {
 	GENERATED_BODY()
-	
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	int configID;
 
 	FInventoryItem(const int _configId = -1)
@@ -31,6 +32,7 @@ public:
 	int inventorySizeY;
 	
 	UExmWeaponTagComponent *availableWeapons[5];
+	
 	FInventoryItem *inventorySlots;
 	
 	int32 GetIndex(int32 x, int32 y) const
@@ -45,9 +47,20 @@ public:
 	}
 
 	UFUNCTION(BlueprintCallable)
+	FInventoryItem& GetItemByIndex(int index)
+	{
+		return inventorySlots[index];
+	}
+
+	UFUNCTION(BlueprintCallable)
 	int32 GetInventorySize()
 	{
 		return inventorySizeX * inventorySizeY;
+	}
+
+	virtual EComponentTypes GetComponentType() const override
+	{
+		return COMPONENT_INVENTORY;
 	}
 
 protected:
