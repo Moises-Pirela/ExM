@@ -6,25 +6,25 @@
 
 class AExMCharacter;
 
-USTRUCT()
+USTRUCT(BlueprintType)
 struct FEntityComponent {
 	GENERATED_BODY()
 };
 
-USTRUCT()
+USTRUCT(BlueprintType)
 struct FMovementStateComponent : public FEntityComponent {
 	GENERATED_BODY()
 	AExMCharacter* character;
 	MovementStateMachine movementStateMachine;
 };
 
-USTRUCT()
+USTRUCT(BlueprintType)
 struct FHealthComponent : public FEntityComponent {
 	GENERATED_BODY()
 	FBuffableFloat health;
 };
 
-USTRUCT()
+USTRUCT(BlueprintType)
 struct FStatComponent : public FEntityComponent {
 	GENERATED_BODY()
 	FBuffableInt strength;
@@ -32,12 +32,12 @@ struct FStatComponent : public FEntityComponent {
 	FBuffableInt intelligence;
 };
 
-USTRUCT()
+USTRUCT(BlueprintType)
 struct FPlayerTag : public FEntityComponent {
 	GENERATED_BODY()
 };
 
-USTRUCT()
+USTRUCT(BlueprintType)
 struct FWeaponComponent : public FEntityComponent {
 	GENERATED_BODY()
 };
@@ -49,13 +49,13 @@ struct FInventoryItemSlot  {
 	int stacks;
 };
 
-USTRUCT()
+USTRUCT(BlueprintType)
 struct FInventoryComponent : public FEntityComponent {
 	GENERATED_BODY()
 	TArray<FInventoryItemSlot> inventory;
 };
 
-USTRUCT()
+USTRUCT(BlueprintType)
 struct FEquipmentComponent : public FEntityComponent {
 	GENERATED_BODY()
 	int equippedEntityId;

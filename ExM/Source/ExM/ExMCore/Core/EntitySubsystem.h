@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "EntityContainer.h"
+#include "IPostProcessEvent.h"
 #include "Subsystems/WorldSubsystem.h"
 #include "EntitySubsystem.generated.h"
 
@@ -23,15 +24,20 @@ public:
 	virtual void Initialize(FSubsystemCollectionBase& Collection) override;
 	virtual void Deinitialize() override;
 	virtual void Tick(float deltaTime) override;
-	void SpawnUnrealEntity(TSoftClassPtr<AActor> entityActor);
+	
 	void OnCreateEntity(UEntityConfig* entityConfig, int entityId, UEntity* startingEntity = nullptr);
-	void SendCreateEntityEvent(CreateEntityEvent createEntityEvent);
+	void SendPostprocessEvent(IPostProcessEvent* postProcessEvent);
 	void OnKillEntity(int entityId);
 	template <typename T>
    void AddComponent(int32 entityID, const T& componentData);
 	template <typename T>
 	T* GetComponent(int32 entityID);
 	virtual TStatId GetStatId() const override;
+
+	UFUNCTION(BlueprintCallable)
+	void SpawnUnrealEntity(TSoftClassPtr<AActor> entityActor);
+	UFUNCTION(BlueprintCallable)
+	bool GetComponentByUSTRUCT(FName structName, int entityId, FEntityComponent& component);
 
 	EntityContainer* entityContainer;
 };

@@ -1,7 +1,6 @@
 ﻿#include "EntityContainer.h"
 
 #include "ComponentArray.h"
-#include "CreateEntityEvent.h"
 #include "Entity.h"
 #include "EntityComponent.h"
 #include "EntityComponentConfig.h"
@@ -87,12 +86,17 @@ void EntityContainer::KillEntity(int entityId)
 
 void EntityContainer::ProcessEvents()
 {
-	for (CreateEntityEvent _event : createEntityEvents)
+	for (IPostProcessEvent* _event : postProcessEvents)
 	{
-		CreateEntity(_event.pConfig, _event.pUnrealEntity);
+		if (CreateEntityEvent* _createEntityEvent = (CreateEntityEvent*)_event)
+		{
+			CreateEntity(_createEntityEvent->pConfig, _createEntityEvent->pUnrealEntity);
+		}
+
+		eventPool.Deallocate(_event);
 	}
 	
-	createEntityEvents.Empty();
+	postProcessEvents.Empty();
 }
 
 template <typename T>

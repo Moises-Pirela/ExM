@@ -112,15 +112,14 @@ void AExMCharacter::Tick(float DeltaSeconds)
 		targetLeanLocAmount = 0;
 	}
 
+	//LEAN
 	FRotator targetRotation = FRotator(CameraRoot->GetRelativeRotation().Pitch, CameraRoot->GetRelativeRotation().Yaw,
 	                                   targetLeanRotAmount);
 	FRotator lerpedTarget = FMath::RInterpTo(CameraRoot->GetRelativeRotation(), targetRotation, DeltaSeconds, 10);
 	CameraRoot->SetRelativeRotation(lerpedTarget);
 	MeshRoot->SetRelativeRotation(lerpedTarget);
-
 	FVector targetLocation = FVector(0, targetLeanLocAmount, CameraRoot->GetRelativeLocation().Z);
 	FVector lerpedLocTarget = FMath::VInterpTo(CameraRoot->GetRelativeLocation(), targetLocation, DeltaSeconds, 10);
-
 	CameraRoot->SetRelativeLocation(lerpedLocTarget);
 	MeshRoot->SetRelativeLocation(lerpedLocTarget);
 
@@ -288,6 +287,8 @@ bool AExMCharacter::TryVault()
 	_vaultTarget += FVector::UpVector * _capsuleHalfHeight + 10;
 
 	vaultEndLocation = _vaultTarget;
+
+	vaultTimeline.PlayFromStart();
 
 	return true;
 }

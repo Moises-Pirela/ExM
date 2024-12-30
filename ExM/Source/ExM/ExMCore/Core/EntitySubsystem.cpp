@@ -7,6 +7,7 @@
 #include "EntityContainer.h"
 #include "ExM/ExMCore/Configs/EntityConfig.h"
 #include "ExM/ExMCore/Systems/Systems.h"
+#include "ExM/ExMCore/Utils/Logger.h"
 
 void UEntitySubsystem::Initialize(FSubsystemCollectionBase& Collection)
 {
@@ -57,10 +58,10 @@ void UEntitySubsystem::Tick(float deltaTime)
 {
 	Super::Tick(deltaTime);
 
-	for(auto systemRun : systems)
-	{
-		systemRun(GetWorld(), entityContainer->unrealEntities, entityContainer->componentArrays, deltaTime);
-	}
+	// for(auto systemRun : systems)
+	// {
+	// 	systemRun(GetWorld(), entityContainer, deltaTime);
+	// }
 }
 
 void UEntitySubsystem::SpawnUnrealEntity(TSoftClassPtr<AActor> entityActor)
@@ -77,14 +78,39 @@ void UEntitySubsystem::SpawnUnrealEntity(TSoftClassPtr<AActor> entityActor)
 			AActor* spawnedActor = world->SpawnActor<AActor>(entityActor->GetClass(), FTransform(), spawnParams);
 			UEntity* unrealEntity = spawnedActor->GetComponentByClass<UEntity>();
 
-			CreateEntityEvent _createEntityEvent;
+			CreateEntityEvent* _createEntityEvent = (CreateEntityEvent*)entityContainer->eventPool.Allocate();
 
-			_createEntityEvent.pConfig = unrealEntity->entityConfig;
-			_createEntityEvent.pUnrealEntity = unrealEntity;
+			_createEntityEvent->pConfig = unrealEntity->entityConfig;
+			_createEntityEvent->pUnrealEntity = unrealEntity;
 
-			SendCreateEntityEvent(_createEntityEvent);
+			SendPostprocessEvent(_createEntityEvent);
 		}
 	} 
+}
+
+bool UEntitySubsystem::GetComponentByUSTRUCT(FName structName, int entityId, FEntityComponent& component)
+{
+	UStruct* type = FindObject<UStruct>(ANY_PACKAGE, *structName.ToString());
+
+	if (!type)
+	{
+		FString mess = FString::Printf(TEXT("Struct type not found for name: %s"), *structName.ToString());
+		NecroLog(mess, LOG_DEBUG);
+	} else
+	{
+		FString mess = FString::Printf(TEXT("Struct type found for name: %s"), *structName.ToString());
+		NecroLog(mess, LOG_DEBUG);
+	}
+
+	if (!entityContainer->componentTypeIdMap.Contains(type)) return false;
+	
+	int componentTypeId = entityContainer->componentTypeIdMap[type];
+
+	if (entityContainer->componentArrays[componentTypeId]->components[entityId] == nullptr) return false;
+
+	component = *entityContainer->componentArrays[componentTypeId]->components[entityId];
+	
+	return true;
 }
 
 void UEntitySubsystem::OnCreateEntity(UEntityConfig* entityConfig, int entityId, UEntity* startingEntity)
@@ -95,11 +121,13 @@ void UEntitySubsystem::OnCreateEntity(UEntityConfig* entityConfig, int entityId,
 	}
 }
 
-void UEntitySubsystem::SendCreateEntityEvent(CreateEntityEvent createEntityEvent)
+void UEntitySubsystem::SendPostprocessEvent(IPostProcessEvent* postProcessEvent)
 {
-	entityContainer->createEntityEvents.Add(createEntityEvent);
-}
+	entityContainer->AddEvent(postProcessEvent);
 
+	auto logMessage = FString::Printf(TEXT("Hello"));
+	NecroLog(logMessage, LOG_ERROR);
+}
 
 void UEntitySubsystem::OnKillEntity(int entityId)
 {

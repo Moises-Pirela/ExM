@@ -1,14 +1,13 @@
 ﻿#include "Entity.h"
-#include "CreateEntityEvent.h"
 #include "EntitySubsystem.h"
 
 void UEntity::SetupEntity()
 {
 	auto subsystem = GetWorld()->GetSubsystem<UEntitySubsystem>();
-	CreateEntityEvent _createEntityEvent;
-	_createEntityEvent.pConfig = entityConfig;
-	_createEntityEvent.pUnrealEntity = this;
-	subsystem->entityContainer->createEntityEvents.Add(_createEntityEvent);
+	CreateEntityEvent* _createEntityEvent = (CreateEntityEvent*)subsystem->entityContainer->eventPool.Allocate();
+	_createEntityEvent->pConfig = entityConfig;
+	_createEntityEvent->pUnrealEntity = this;
+	subsystem->SendPostprocessEvent(_createEntityEvent);
 }
 
 void UEntity::BeginPlay()

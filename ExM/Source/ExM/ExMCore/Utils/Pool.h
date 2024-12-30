@@ -1,5 +1,4 @@
 ﻿#pragma once
-#include "ExM/ExMCore/Core/IPostProcessEvent.h"
 
 template <typename T>
 class Pool {
