@@ -115,3 +115,6 @@ ExM/Binaries/Win64/UnrealEditor-ExM.patch_3.exe
 ExM/Binaries/Win64/UnrealEditor-ExM.patch_3.pdb
 ExM/Binaries/Win64/UnrealEditor-ExM.pdb
 /ExM/Intermediate
+/ExM/Intermediate/Build
+/ExM/Binaries
+ExM/Binaries/Win64/UnrealEditor-ExM.patch_2.pdb
