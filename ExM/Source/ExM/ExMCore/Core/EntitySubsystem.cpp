@@ -26,7 +26,6 @@ void UEntitySubsystem::Initialize(FSubsystemCollectionBase& Collection)
 			if(!componentTypeIdMap.Contains(_struct))
 			{
 				componentTypeIdMap.Add(_struct, _idCounter++);
-				UE_LOG(LogTemp, Log, TEXT("Registered Component: %s with ID: %d"), *_struct->GetName(), _idCounter - 1);
 			}
 		}
 	}
@@ -45,6 +44,24 @@ void UEntitySubsystem::Initialize(FSubsystemCollectionBase& Collection)
 	{
 		OnKillEntity(entityId);
 	});
+
+	//LOAD SYSTEMS
+	for(TObjectIterator<UClass> It; It; ++It)
+	{
+		UClass* _class = *It;
+
+		if(_class->IsChildOf(USystemBase::StaticClass()) && _class != USystemBase::StaticClass())
+		{
+			USystemBase*    systemInstance = NewObject<USystemBase>(this, _class);
+			ESystemTickType tickType = systemInstance->GetSystemTickType();
+			auto            message = FString::Printf(TEXT("Load system %s"), *_class->GetName());
+			NecroLog(message, ELogLevel::LOG_WARNING);
+
+			if(!systemsMap.Contains(tickType)) systemsMap.Add(tickType, TArray<USystemBase*>{});
+
+			systemsMap[tickType].Add(systemInstance);
+		}
+	}
 }
 
 void UEntitySubsystem::Deinitialize()
@@ -77,7 +94,7 @@ void UEntitySubsystem::SpawnUnrealEntity(TSoftClassPtr<AActor> entityActor)
 		UWorld* world = GetWorld();
 		if(world)
 		{
-			AActor* spawnedActor = world->SpawnActor<AActor>(entityActor->GetClass(), FTransform(), spawnParams);
+			AActor*  spawnedActor = world->SpawnActor<AActor>(entityActor->GetClass(), FTransform(), spawnParams);
 			UEntity* unrealEntity = spawnedActor->GetComponentByClass<UEntity>();
 
 			CreateEntityEvent* _createEntityEvent = (CreateEntityEvent*)entityContainer->eventPool.Allocate();
@@ -87,13 +104,14 @@ void UEntitySubsystem::SpawnUnrealEntity(TSoftClassPtr<AActor> entityActor)
 
 			SendPostprocessEvent(_createEntityEvent);
 		}
-	} 
+	}
 }
 
-bool UEntitySubsystem::GetComponentByUSTRUCT(FName structName, int entityId, FEntityComponent& component) {
+bool UEntitySubsystem::GetComponentByUSTRUCT(FName structName, int entityId, FEntityComponent& component)
+{
 	UStruct* type = FindObject<UStruct>(ANY_PACKAGE, *structName.ToString());
 
-	if (!type)
+	if(!type)
 	{
 		FString mess = FString::Printf(TEXT("Struct type not found for name: %s"), *structName.ToString());
 		NecroLog(mess, LOG_DEBUG);
@@ -103,34 +121,38 @@ bool UEntitySubsystem::GetComponentByUSTRUCT(FName structName, int entityId, FEn
 		NecroLog(mess, LOG_DEBUG);
 	}
 
-	if (!entityContainer->componentTypeIdMap.Contains(type)) return false;
-	
+	if(!entityContainer->componentTypeIdMap.Contains(type)) return false;
+
 	int componentTypeId = entityContainer->componentTypeIdMap[type];
 
-	if (entityContainer->componentArrays[componentTypeId]->components[entityId] == nullptr) return false;
+	if(entityContainer->componentArrays[componentTypeId]->components[entityId] == nullptr) return false;
 
 	component = *entityContainer->componentArrays[componentTypeId]->components[entityId];
-	
+
 	return true;
 }
 
-void UEntitySubsystem::OnCreateEntity(UEntityConfig* entityConfig, int entityId, UEntity* startingEntity) {
+void UEntitySubsystem::OnCreateEntity(UEntityConfig* entityConfig, int entityId, UEntity* startingEntity)
+{
 	if(startingEntity)
 	{
 		entityContainer->unrealEntities[entityId] = startingEntity;
 	}
 }
 
-void UEntitySubsystem::SendPostprocessEvent(IPostProcessEvent* postProcessEvent) {
+void UEntitySubsystem::SendPostprocessEvent(IPostProcessEvent* postProcessEvent)
+{
 	entityContainer->AddEvent(postProcessEvent);
 }
 
-void UEntitySubsystem::OnKillEntity(int entityId) {
+void UEntitySubsystem::OnKillEntity(int entityId)
+{
 	GetWorld()->DestroyActor(entityContainer->unrealEntities[entityId]->GetOwner());
 
 	entityContainer->unrealEntities[entityId] = nullptr;
 }
 
-TStatId UEntitySubsystem::GetStatId() const {
+TStatId UEntitySubsystem::GetStatId() const
+{
 	return TStatId();
 }

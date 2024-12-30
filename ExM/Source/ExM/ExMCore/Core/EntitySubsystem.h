@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "EntityContainer.h"
 #include "IPostProcessEvent.h"
+#include "ExM/ExMCore/Systems/Systems.h"
 #include "Subsystems/WorldSubsystem.h"
 #include "EntitySubsystem.generated.h"
 
@@ -40,4 +41,5 @@ public:
 	bool GetComponentByUSTRUCT(FName structName, int entityId, FEntityComponent& component);
 
 	EntityContainer* entityContainer;
+	TMap<ESystemTickType, TArray<USystemBase*>> systemsMap;
 };

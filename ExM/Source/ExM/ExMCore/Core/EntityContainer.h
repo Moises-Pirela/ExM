@@ -47,9 +47,22 @@ public:
 	}
 
 	template <typename T>
-	void AddComponent(int32 entityID, const T& componentData);
+	void AddComponent(int32 entityID, const T& componentData)
+	{
+		UStruct* _componentClass = T::StaticStruct();
+		int32 _componentTypeId = *componentTypeIdMap.Find(_componentClass);
+
+		componentArrays[_componentTypeId]->components[entityID] = componentData;
+	}
+
 	template <typename T>
-	T* GetComponent(int32 entityID);
+	T* GetComponent(int32 entityID)
+	{
+		UStruct* _componentClass = T::StaticStruct();
+		int32 _componentTypeId = *componentTypeIdMap.Find(_componentClass);
+	
+		return static_cast<T*>(componentArrays[_componentTypeId]->components[entityID]);
+	}
 
 private :
 	int availableEntityId;

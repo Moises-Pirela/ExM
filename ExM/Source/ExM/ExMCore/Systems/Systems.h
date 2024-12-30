@@ -2,7 +2,7 @@
 #include "ExM/ExMCore/Core/EntityContainer.h"
 #include "Systems.generated.h"
 
-enum SystemTickType {
+enum ESystemTickType {
 	SYSTEM_TICK,
 	SYSTEM_POSTPROCESS,
 	SYSTEM_FIXED_TICK
@@ -15,5 +15,5 @@ class USystemBase : public UObject {
 	
 public:
 	virtual void Process(EntityContainer& entityContainer, float deltaTime) PURE_VIRTUAL();
-	virtual SystemTickType GetSystemTickType() PURE_VIRTUAL(USystemBase::GetSystemTickType, return SYSTEM_TICK;)
+	virtual ESystemTickType GetSystemTickType() PURE_VIRTUAL(USystemBase::GetSystemTickType, return SYSTEM_TICK;)
 };

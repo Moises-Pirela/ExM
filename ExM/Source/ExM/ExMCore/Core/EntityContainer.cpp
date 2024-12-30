@@ -83,21 +83,3 @@ void EntityContainer::KillEntity(int entityId)
 	}
 	
 }
-
-template <typename T>
-void EntityContainer::AddComponent(int32 entityID, const T& componentData)
-{
-	UStruct* _componentClass = T::StaticStruct();
-	int32 _componentTypeId = *componentTypeIdMap.Find(_componentClass);
-
-	componentArrays[_componentTypeId]->components[entityID] = componentData;
-}
-
-template <typename T>
-T* EntityContainer::GetComponent(int32 entityID)
-{
-	UStruct* _componentClass = T::StaticStruct();
-	int32 _componentTypeId = *componentTypeIdMap.Find(_componentClass);
-	
-	return static_cast<T*>(componentArrays[_componentTypeId]->components[entityID]);
-}
