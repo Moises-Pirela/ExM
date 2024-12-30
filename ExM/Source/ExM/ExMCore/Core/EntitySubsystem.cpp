@@ -75,10 +75,15 @@ void UEntitySubsystem::Tick(float deltaTime)
 {
 	Super::Tick(deltaTime);
 
-	// for(auto systemRun : systems)
-	// {
-	// 	systemRun(GetWorld(), entityContainer, deltaTime);
-	// }
+	for(auto systemRun : systemsMap[SYSTEM_TICK])
+	{
+		systemRun->Process(*entityContainer, deltaTime);
+	}
+	
+	for(auto systemRun : systemsMap[SYSTEM_POSTPROCESS])
+	{
+		systemRun->Process(*entityContainer, deltaTime);
+	}
 
 	entityContainer->postProcessEvents.Empty();
 }
