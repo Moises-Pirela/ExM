@@ -5,26 +5,26 @@
 #include "StatComponentConfig.generated.h"
 
 UCLASS(EditInlineNew, BlueprintType)
-class EXM_API UStatComponentConfig : public UEntityComponentConfigBase {
+class EXM_API UAttributesComponentConfig : public UEntityComponentConfigBase {
 	
 	GENERATED_BODY()
 
 public:
 
 UPROPERTY(EditAnywhere, BlueprintReadOnly)
-float strength;
+int strength;
 
 UPROPERTY(EditAnywhere, BlueprintReadOnly)
-float dexterity;
+int dexterity;
 
 UPROPERTY(EditAnywhere, BlueprintReadOnly)
-float intelligence;
+int intelligence;
 
 	virtual FEntityComponent* CreateComponent() override {
-		return new FStatComponent();
+		return new FAttributesComponent();
 	};
 
 	virtual UStruct* GetComponentTypeId() override {
-		return FStatComponent::StaticStruct();
+		return FAttributesComponent::StaticStruct();
 	};
 };

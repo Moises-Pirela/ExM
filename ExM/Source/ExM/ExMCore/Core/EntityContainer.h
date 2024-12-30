@@ -17,13 +17,11 @@ public:
 	UEntity*                                               unrealEntities[MAX_ENTITY_COUNT];
 	FEntity                                                entities[MAX_ENTITY_COUNT];
 	TArray<FComponentArray*>                               componentArrays;
-	Pool<IPostProcessEvent>                eventPool;
+	TArray<IPostProcessEvent*>                             postProcessEvents;
+	Pool<IPostProcessEvent>                                eventPool;
 	TMap<UStruct*, int>                                    componentTypeIdMap;
 	TArray<TFunction<void(UEntityConfig*, int, UEntity*)>> entityCreateObservers;
 	TArray<TFunction<void(int)>>                           entityKillObservers;
-
-private:
-	TArray<IPostProcessEvent*> postProcessEvents;
 
 public:
 	EntityContainer() : unrealEntities{}, componentArrays{}, eventPool(10), availableEntityId(0), lastRecycledEntityId(-1)
@@ -42,8 +40,6 @@ public:
 	void CreateEntity(UEntityConfig* entityConfig, UEntity* startingEntity);
 
 	void KillEntity(int entityId);
-
-	void ProcessEvents();
 
 	void AddEvent(IPostProcessEvent* event)
 	{

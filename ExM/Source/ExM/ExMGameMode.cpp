@@ -25,11 +25,4 @@ void AExMGameMode::BeginPlay()
 void AExMGameMode::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
-
-	entitySubsystem->entityContainer->ProcessEvents();
-}
-
-void AExMGameMode::ProcessBuffs(FComponentArray* componentArray, UEntity* entities[100])
-{
-	//TODO: Apply buffs here
 }

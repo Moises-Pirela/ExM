@@ -19,7 +19,6 @@ inline FColor logColorLookUp[LOG_MAX]
 
 static void NecroLog(FString& message, ELogLevel level = LOG_INFO, bool bOnScreen = true)
 {
-
 	switch(level)
 	{
 	case LOG_WARNING:

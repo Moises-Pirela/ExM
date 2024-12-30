@@ -29,8 +29,6 @@ public:
 	virtual void Tick(float DeltaSeconds) override;
 
 private:
-
-	void ProcessBuffs(FComponentArray* componentArray, UEntity* entities[MAX_ENTITY_COUNT]);
 };
 
 

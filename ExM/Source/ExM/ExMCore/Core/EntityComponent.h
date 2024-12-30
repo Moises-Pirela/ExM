@@ -1,6 +1,7 @@
 ﻿#pragma once
 #include "CoreMinimal.h"
 #include "ExM/ExMCore/Buffables.h"
+#include "ExM/ExMCore/Utils/DamageCalculators.h"
 #include "ExM/MovementStateMachine/MovementStateMachine.h"
 #include "EntityComponent.generated.h"
 
@@ -25,11 +26,10 @@ struct FHealthComponent : public FEntityComponent {
 };
 
 USTRUCT(BlueprintType)
-struct FStatComponent : public FEntityComponent {
+struct FDamageComponent : public FEntityComponent {
 	GENERATED_BODY()
-	FBuffableInt strength;
-	FBuffableInt dexterity;
-	FBuffableInt intelligence;
+	FBuffableFloat damage;
+	EDamageTypes   damageType;
 };
 
 USTRUCT(BlueprintType)
@@ -53,6 +53,14 @@ USTRUCT(BlueprintType)
 struct FInventoryComponent : public FEntityComponent {
 	GENERATED_BODY()
 	TArray<FInventoryItemSlot> inventory;
+};
+
+USTRUCT(BlueprintType)
+struct FAttributesComponent : public FEntityComponent {
+	GENERATED_BODY()
+	FBuffableInt strength;
+	FBuffableInt dexterity;
+	FBuffableInt intelligence;
 };
 
 USTRUCT(BlueprintType)

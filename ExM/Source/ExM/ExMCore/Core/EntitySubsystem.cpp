@@ -62,6 +62,8 @@ void UEntitySubsystem::Tick(float deltaTime)
 	// {
 	// 	systemRun(GetWorld(), entityContainer, deltaTime);
 	// }
+
+	entityContainer->postProcessEvents.Empty();
 }
 
 void UEntitySubsystem::SpawnUnrealEntity(TSoftClassPtr<AActor> entityActor)
@@ -88,8 +90,7 @@ void UEntitySubsystem::SpawnUnrealEntity(TSoftClassPtr<AActor> entityActor)
 	} 
 }
 
-bool UEntitySubsystem::GetComponentByUSTRUCT(FName structName, int entityId, FEntityComponent& component)
-{
+bool UEntitySubsystem::GetComponentByUSTRUCT(FName structName, int entityId, FEntityComponent& component) {
 	UStruct* type = FindObject<UStruct>(ANY_PACKAGE, *structName.ToString());
 
 	if (!type)
@@ -113,30 +114,23 @@ bool UEntitySubsystem::GetComponentByUSTRUCT(FName structName, int entityId, FEn
 	return true;
 }
 
-void UEntitySubsystem::OnCreateEntity(UEntityConfig* entityConfig, int entityId, UEntity* startingEntity)
-{
+void UEntitySubsystem::OnCreateEntity(UEntityConfig* entityConfig, int entityId, UEntity* startingEntity) {
 	if(startingEntity)
 	{
 		entityContainer->unrealEntities[entityId] = startingEntity;
 	}
 }
 
-void UEntitySubsystem::SendPostprocessEvent(IPostProcessEvent* postProcessEvent)
-{
+void UEntitySubsystem::SendPostprocessEvent(IPostProcessEvent* postProcessEvent) {
 	entityContainer->AddEvent(postProcessEvent);
-
-	auto logMessage = FString::Printf(TEXT("Hello"));
-	NecroLog(logMessage, LOG_ERROR);
 }
 
-void UEntitySubsystem::OnKillEntity(int entityId)
-{
+void UEntitySubsystem::OnKillEntity(int entityId) {
 	GetWorld()->DestroyActor(entityContainer->unrealEntities[entityId]->GetOwner());
 
 	entityContainer->unrealEntities[entityId] = nullptr;
 }
 
-TStatId UEntitySubsystem::GetStatId() const
-{
+TStatId UEntitySubsystem::GetStatId() const {
 	return TStatId();
 }

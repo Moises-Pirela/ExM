@@ -84,21 +84,6 @@ void EntityContainer::KillEntity(int entityId)
 	
 }
 
-void EntityContainer::ProcessEvents()
-{
-	for (IPostProcessEvent* _event : postProcessEvents)
-	{
-		if (CreateEntityEvent* _createEntityEvent = (CreateEntityEvent*)_event)
-		{
-			CreateEntity(_createEntityEvent->pConfig, _createEntityEvent->pUnrealEntity);
-		}
-
-		eventPool.Deallocate(_event);
-	}
-	
-	postProcessEvents.Empty();
-}
-
 template <typename T>
 void EntityContainer::AddComponent(int32 entityID, const T& componentData)
 {
