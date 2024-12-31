@@ -56,6 +56,16 @@ struct FComponentFlags
 	{
 	}
 
+	FComponentFlags(const int* componentTypes, const int32 count): value(0)
+	{
+		for (int i = 0; i < count; i++)
+		{
+			uint32 type = (uint32)componentTypes[i];
+
+			AddFlag(type);
+		}
+	}
+
 	FComponentFlags(const EComponentTypes* componentTypes, const int32 count): value(0)
 	{
 		for (int i = 0; i < count; i++)
@@ -81,7 +91,10 @@ struct FComponentFlags
 		return (value & flag) != 0; 
 	}
 
-	
+	bool MatchesSignature(const FComponentFlags flags)
+	{
+		return (value & flags.value) == value;
+	}
 };
 
 struct FEntity {

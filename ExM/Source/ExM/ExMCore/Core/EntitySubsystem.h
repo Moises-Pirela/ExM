@@ -29,10 +29,6 @@ public:
 	void OnCreateEntity(UEntityConfig* entityConfig, int entityId, UEntity* startingEntity = nullptr);
 	void SendPostprocessEvent(IPostProcessEvent* postProcessEvent);
 	void OnKillEntity(int entityId);
-	template <typename T>
-   void AddComponent(int32 entityID, const T& componentData);
-	template <typename T>
-	T* GetComponent(int32 entityID);
 	virtual TStatId GetStatId() const override;
 
 	UFUNCTION(BlueprintCallable)
@@ -41,5 +37,6 @@ public:
 	bool GetComponentByUSTRUCT(FName structName, int entityId, FEntityComponent& component);
 
 	EntityContainer* entityContainer;
-	TMap<ESystemTickType, TArray<USystemBase*>> systemsMap;
+	
+	TMap<ESystemTickType, TArray<TStrongObjectPtr<USystemBase>>> systems;
 };

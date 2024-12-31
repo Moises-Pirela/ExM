@@ -4,6 +4,7 @@
 #include "Entity.h"
 #include "EntityComponent.h"
 #include "EntityComponentConfig.h"
+#include "ExM/ExMCharacter.h"
 #include "ExM/ExMCore/Configs/EntityConfig.h"
 #include "ExM/ExMCore/Utils/Logger.h"
 
@@ -32,9 +33,9 @@ void EntityContainer::CreateEntity(UEntityConfig* entityConfig, UEntity* startin
 	{
 		auto component = entityConfig->componentConfigs[i]->CreateComponent();
 		UStruct* componentType = entityConfig->componentConfigs[i]->GetComponentTypeId();
+
 		if (!componentTypeIdMap.Contains(componentType))
 		{
-
 			auto message = FString::Printf(TEXT("Component type not found: %s %s"), *componentType->GetName(), *entityConfig->componentConfigs[i]->GetName());
 			NecroLog(message, ELogLevel::LOG_ERROR);
 			
@@ -43,10 +44,28 @@ void EntityContainer::CreateEntity(UEntityConfig* entityConfig, UEntity* startin
 
 		auto message = FString::Printf(TEXT("Component type found: %s %s"), *componentType->GetName(), *entityConfig->componentConfigs[i]->GetName());
 		NecroLog(message, ELogLevel::LOG_DEBUG);
+
+		if (componentType == FPlayerTag::StaticStruct())
+		{
+			PLAYER_ENTITY_ID = entityId;
+		}
+
+		if (componentType == FPlayerMovementComponent::StaticStruct())
+		{
+			((FPlayerMovementComponent*)component)->character = Cast<AExMCharacter>(startingEntity->GetOwner());
+		}
 		
 		int componentTypeId = componentTypeIdMap[componentType];
 		componentArrays[componentTypeId]->AddComponent(component, entityId);
 		entity.componentSignature.AddFlag(componentTypeId);
+	}
+
+	for(auto& _archetype : archetypes)
+	{
+		if (entity.componentSignature.MatchesSignature(_archetype.Value.signatureHash))
+		{
+			_archetype.Value.entities.Add(entityId);
+		}
 	}
 
 	entity.entityFlags.AddFlag(ENTITY_STATE_ACTIVE);

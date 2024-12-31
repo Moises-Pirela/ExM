@@ -17,33 +17,6 @@ enum EInputDeviceType {
 	DEVICE_GAMEPAD
 };
 
-USTRUCT(BlueprintType)
-struct FInputData
-{
-	GENERATED_BODY()
-
-	UPROPERTY(BlueprintReadWrite)
-	FVector2D moveDirection;
-
-	UPROPERTY(BlueprintReadWrite)
-	FVector2D lookDirection;
-
-	UPROPERTY(BlueprintReadWrite)
-	bool bIsJumping;
-
-	UPROPERTY(BlueprintReadWrite)
-	bool bIsSprinting;
-
-	UPROPERTY(BlueprintReadWrite)
-	bool bIsCrouching;
-
-	UPROPERTY(BlueprintReadWrite)
-	bool bIsLeaning;
-
-	UPROPERTY(BlueprintReadWrite)
-	bool bIsFiring;
-};
-
 UCLASS()
 class EXM_API AExMPlayerController : public APlayerController {
 	GENERATED_BODY()

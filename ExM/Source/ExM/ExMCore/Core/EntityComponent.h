@@ -13,7 +13,7 @@ struct FEntityComponent {
 };
 
 USTRUCT(BlueprintType)
-struct FMovementStateComponent : public FEntityComponent {
+struct FPlayerMovementComponent : public FEntityComponent {
 	GENERATED_BODY()
 	AExMCharacter* character;
 	MovementStateMachine movementStateMachine;
@@ -68,6 +68,46 @@ struct FEquipmentComponent : public FEntityComponent {
 	GENERATED_BODY()
 	int equippedEntityId;
 	int prevEquippedEntityId;
+};
+
+USTRUCT(BlueprintType)
+struct FPlayerInputData
+{
+	GENERATED_BODY()
+
+	UPROPERTY(BlueprintReadWrite)
+	FVector2D moveDirection;
+
+	UPROPERTY(BlueprintReadWrite)
+	FVector2D lookDirection;
+
+	UPROPERTY(BlueprintReadWrite)
+	bool bIsJumping;
+
+	UPROPERTY(BlueprintReadWrite)
+	bool bIsSprinting;
+
+	UPROPERTY(BlueprintReadWrite)
+	bool bIsCrouching;
+
+	UPROPERTY(BlueprintReadWrite)
+	bool bIsLeaning;
+
+	UPROPERTY(BlueprintReadWrite)
+	bool bIsFiring;
+};
+
+USTRUCT()
+struct FPlayerInputComponent : public FEntityComponent {
+
+	GENERATED_BODY()
+
+	FPlayerInputData inputData;
+};
+
+USTRUCT(BlueprintType)
+struct FAIComponent : public FEntityComponent {
+	GENERATED_BODY()
 };
 
 

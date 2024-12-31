@@ -1,6 +1,7 @@
 ﻿#pragma once
 #include "ComponentArray.h"
 #include "CoreMinimal.h"
+#include "Archetypes.h"
 #include "IPostProcessEvent.h"
 #include "ExM/ExMCore/Utils/Exmortalis.h"
 #include "ExM/ExMCore/Core/Entity.h"
@@ -22,10 +23,14 @@ public:
 	TMap<UStruct*, int>                                    componentTypeIdMap;
 	TArray<TFunction<void(UEntityConfig*, int, UEntity*)>> entityCreateObservers;
 	TArray<TFunction<void(int)>>                           entityKillObservers;
+	TMap<EArchetype, Archetype>                            archetypes;
+	inline static int                                      PLAYER_ENTITY_ID = -1;
 
 public:
-	EntityContainer() : unrealEntities{}, componentArrays{}, eventPool(10), availableEntityId(0), lastRecycledEntityId(-1)
+	EntityContainer(const TMap<UStruct*, int>& componentTypeMap) : unrealEntities{}, componentArrays{}, eventPool(10), availableEntityId(0), lastRecycledEntityId(-1)
 	{
+		componentTypeIdMap = componentTypeMap;
+		
 		for(int i = 0; i < MAX_ENTITY_COUNT; i++)
 		{
 			entities[i] = FEntity();
@@ -35,6 +40,21 @@ public:
 		{
 			componentArrays.Add(new FComponentArray());
 		}
+
+		Archetype playerArchetype = Archetype();
+		playerArchetype.signatureHash.AddFlag(componentTypeIdMap[FPlayerTag::StaticStruct()]);
+
+		Archetype weaponArchetype = Archetype();
+		weaponArchetype.signatureHash.AddFlag(componentTypeIdMap[FWeaponComponent::StaticStruct()]);
+
+		Archetype enemyArchetype = Archetype();
+		enemyArchetype.signatureHash.AddFlag(componentTypeIdMap[FAIComponent::StaticStruct()]);
+
+		archetypes.Add(ARCHETYPE_PLAYER, playerArchetype);
+		archetypes.Add(ARCHETYPE_WEAPON, weaponArchetype);
+		archetypes.Add(ARCHETYPE_ENEMY, enemyArchetype);
+
+		PLAYER_ENTITY_ID = -1;
 	}
 
 	void CreateEntity(UEntityConfig* entityConfig, UEntity* startingEntity);
@@ -50,7 +70,7 @@ public:
 	void AddComponent(int32 entityID, const T& componentData)
 	{
 		UStruct* _componentClass = T::StaticStruct();
-		int32 _componentTypeId = *componentTypeIdMap.Find(_componentClass);
+		int32    _componentTypeId = *componentTypeIdMap.Find(_componentClass);
 
 		componentArrays[_componentTypeId]->components[entityID] = componentData;
 	}
@@ -59,9 +79,14 @@ public:
 	T* GetComponent(int32 entityID)
 	{
 		UStruct* _componentClass = T::StaticStruct();
-		int32 _componentTypeId = *componentTypeIdMap.Find(_componentClass);
-	
+		int32    _componentTypeId = *componentTypeIdMap.Find(_componentClass);
+
 		return static_cast<T*>(componentArrays[_componentTypeId]->components[entityID]);
+	}
+
+	FEntity& GetPlayerEntity()
+	{
+		return entities[PLAYER_ENTITY_ID];
 	}
 
 private :

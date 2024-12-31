@@ -32,8 +32,7 @@ void UEntitySubsystem::Initialize(FSubsystemCollectionBase& Collection)
 
 	MAX_COMPONENT_TYPES = _idCounter + 1;
 
-	entityContainer = new EntityContainer();
-	entityContainer->componentTypeIdMap = componentTypeIdMap;
+	entityContainer = new EntityContainer(componentTypeIdMap);
 
 	entityContainer->entityCreateObservers.Add([this](UEntityConfig* entityConfig, int entityId, UEntity* startingEntity)
 	{
@@ -50,16 +49,21 @@ void UEntitySubsystem::Initialize(FSubsystemCollectionBase& Collection)
 	{
 		UClass* _class = *It;
 
-		if(_class->IsChildOf(USystemBase::StaticClass()) && _class != USystemBase::StaticClass())
+		if(_class->IsChildOf(USystemBase::StaticClass()))
 		{
-			USystemBase*    systemInstance = NewObject<USystemBase>(this, _class);
+			if(_class->HasAnyClassFlags(CLASS_Abstract))
+			{
+				auto mess = FString::Printf(TEXT("Skip base system %s"), *_class->GetName());
+				NecroLog(mess, ELogLevel::LOG_WARNING);
+				continue;
+			}
+
+			USystemBase* systemInstance = NewObject<USystemBase>(this, _class);
 			ESystemTickType tickType = systemInstance->GetSystemTickType();
 			auto            message = FString::Printf(TEXT("Load system %s"), *_class->GetName());
 			NecroLog(message, ELogLevel::LOG_WARNING);
 
-			if(!systemsMap.Contains(tickType)) systemsMap.Add(tickType, TArray<USystemBase*>{});
-
-			systemsMap[tickType].Add(systemInstance);
+			systems.FindOrAdd(tickType).Add(TStrongObjectPtr<USystemBase>(systemInstance));
 		}
 	}
 }
@@ -68,21 +72,39 @@ void UEntitySubsystem::Deinitialize()
 {
 	Super::Deinitialize();
 
-	delete entityContainer;
+	if(entityContainer)
+	{
+		delete entityContainer;
+		entityContainer = nullptr;
+	}
+
+	systems.Empty();
 }
 
 void UEntitySubsystem::Tick(float deltaTime)
 {
 	Super::Tick(deltaTime);
 
-	for(auto systemRun : systemsMap[SYSTEM_TICK])
+	// Process SYSTEM_TICK systems
+	const auto& systemTickArray = systems[ESystemTickType::SYSTEM_TICK];
+	for(int32 i = 0; i < systemTickArray.Num(); ++i)
 	{
-		systemRun->Process(*entityContainer, deltaTime);
+		auto systemRun = systemTickArray[i];
+		if(systemRun)
+		{
+			systemRun->Process(entityContainer, deltaTime);
+		}
 	}
-	
-	for(auto systemRun : systemsMap[SYSTEM_POSTPROCESS])
+
+	// Process SYSTEM_POSTPROCESS systems
+	const auto& systemPostProcessArray = systems[ESystemTickType::SYSTEM_POSTPROCESS];
+	for(int32 i = 0; i < systemPostProcessArray.Num(); ++i)
 	{
-		systemRun->Process(*entityContainer, deltaTime);
+		auto systemRun = systemPostProcessArray[i];
+		if(systemRun)
+		{
+			systemRun->Process(entityContainer, deltaTime);
+		}
 	}
 
 	entityContainer->postProcessEvents.Empty();

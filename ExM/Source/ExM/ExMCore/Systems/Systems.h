@@ -1,19 +1,23 @@
 ﻿#pragma once
+
 #include "ExM/ExMCore/Core/EntityContainer.h"
 #include "Systems.generated.h"
 
-enum ESystemTickType {
+UENUM()
+enum ESystemTickType : int {
 	SYSTEM_TICK,
 	SYSTEM_POSTPROCESS,
-	SYSTEM_FIXED_TICK
+	SYSTEM_FIXED_TICK,
+
+	SYSTEM_MAX
 };
 
-UCLASS()
-class USystemBase : public UObject {
-
+UCLASS(Abstract)
+class EXM_API USystemBase : public UObject {
 	GENERATED_BODY()
-	
+
 public:
-	virtual void Process(EntityContainer& entityContainer, float deltaTime) PURE_VIRTUAL();
-	virtual ESystemTickType GetSystemTickType() PURE_VIRTUAL(USystemBase::GetSystemTickType, return SYSTEM_TICK;)
+	virtual void Process(EntityContainer* entityContainer, float deltaTime) PURE_VIRTUAL(USystemBase::Process, return;);
+
+	virtual ESystemTickType GetSystemTickType() PURE_VIRTUAL(USystemBase::GetSystemTickType, return ESystemTickType::SYSTEM_TICK;);
 };

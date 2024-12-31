@@ -10,9 +10,9 @@ class UDamageSystem : public USystemBase {
 	GENERATED_BODY()
 
 public:
-	virtual void Process(EntityContainer& entityContainer, float deltaTime) override;
-	FORCEINLINE virtual ESystemTickType GetSystemTickType() override
+	virtual void Process(EntityContainer* entityContainer, float deltaTime) override;
+	virtual ESystemTickType GetSystemTickType() override
 	{
-		return SYSTEM_POSTPROCESS;
+		return ESystemTickType::SYSTEM_POSTPROCESS;
 	};
 };

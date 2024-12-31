@@ -8,7 +8,6 @@
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "InputActionValue.h"
-#include "Chaos/Deformable/ChaosDeformableCollisionsProxy.h"
 #include "Components/TimelineComponent.h"
 #include "Engine/LocalPlayer.h"
 #include "ExMCore/Components/ExmEquipmentComponent.h"
@@ -16,14 +15,17 @@
 #include "ExMCore/Components/ExMInteractionComponent.h"
 #include "ExMCore/Components/ExMJumpComponent.h"
 #include "ExMCore/Components/ExmStatsComponent.h"
+#include "ExMCore/Core/EntitySubsystem.h"
 #include "ExMCore/Utils/DamageCalculators.h"
 #include "ExMCore/Utils/Exmortalis.h"
 #include "ExMCore/Utils/MathUtils.h"
 #include "ExMCore/Utils/StatHelpers.h"
+#include "ExMCore/Core/EntityComponent.h"
+#include "ExMCore/Core/EntityContainer.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
-#include "MovementStateMachine/MovementStateMachine.h"
 #include "PhysicsEngine/PhysicsHandleComponent.h"
+
 
 DEFINE_LOG_CATEGORY(LogTemplateCharacter);
 
@@ -390,24 +392,32 @@ void AExMCharacter::GetLookInputVars(FRotator camRotPrev)
 void AExMCharacter::Move(const FInputActionValue& Value)
 {
 	FVector2D MovementVector = Value.Get<FVector2D>();
+	
+	auto _entitySubsystem = GetWorld()->GetSubsystem<UEntitySubsystem>();
+
+	auto _input =  _entitySubsystem->entityContainer->GetComponent<FPlayerInputComponent>(EntityContainer::PLAYER_ENTITY_ID);
+	
+	if (_input)
+		_input->inputData.moveDirection = MovementVector;
 
 	if(Controller != nullptr)
 	{
-		AddMovementInput(GetActorForwardVector(), MovementVector.Y);
-		AddMovementInput(GetActorRightVector(), MovementVector.X);
+		// AddMovementInput(GetActorForwardVector(), MovementVector.Y);
+		// AddMovementInput(GetActorRightVector(), MovementVector.X);
 		CheckStopSprint(MovementVector.Y);
 	}
 }
 
-void AExMCharacter::Look(const FInputActionValue& Value)
-{
+void AExMCharacter::Look(const FInputActionValue& Value) {
+
 	FVector2D LookAxisVector = Value.Get<FVector2D>();
 
-	if(Controller != nullptr)
-	{
-		AddControllerYawInput(LookAxisVector.X);
-		AddControllerPitchInput(LookAxisVector.Y);
-	}
+	auto _entitySubsystem = GetWorld()->GetSubsystem<UEntitySubsystem>();
+
+	auto _input =  _entitySubsystem->entityContainer->GetComponent<FPlayerInputComponent>(EntityContainer::PLAYER_ENTITY_ID);
+	
+	if (_input)
+		_input->inputData.lookDirection = LookAxisVector;
 }
 
 void AExMCharacter::Sprint(const FInputActionValue& value)

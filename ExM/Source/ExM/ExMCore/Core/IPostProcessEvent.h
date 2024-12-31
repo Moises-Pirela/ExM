@@ -1,5 +1,5 @@
 ﻿#pragma once
-#include "ExM/ExMPlayerController.h"
+#include "EntityComponent.h"
 
 class UEntityConfig;
 class UEntity;
@@ -8,7 +8,7 @@ struct IPostProcessEvent {
 };
 
 struct InputPostProcessEvent : public IPostProcessEvent {
-	FInputData inputData;
+	FPlayerInputData inputData;
 };
 
 struct DamagePostProcessEvent : public IPostProcessEvent {
