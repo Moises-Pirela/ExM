@@ -38,7 +38,7 @@ struct FBuffableFloat : public FBuffableVal
 
 	void ApplyFlatModifier(const float amount, const int stacks)
 	{
-		modifiedVal = baseVal + amount * stacks;
+		modifiedVal += baseVal + amount * stacks;
 	}
 
 	void ApplyPercentageModifier(const float percent, const int stacks)

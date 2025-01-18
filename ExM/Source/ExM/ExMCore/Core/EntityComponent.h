@@ -17,6 +17,8 @@ struct FPlayerMovementComponent : public FEntityComponent {
 	GENERATED_BODY()
 	AExMCharacter* character;
 	MovementStateMachine movementStateMachine;
+
+	FBuffableFloat movementSpeed;
 };
 
 USTRUCT(BlueprintType)

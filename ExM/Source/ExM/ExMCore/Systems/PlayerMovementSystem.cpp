@@ -25,6 +25,8 @@ void UPlayerMovementSystem::Process(EntityContainer* entityContainer, float delt
 	_movementStateComponent->character->AddControllerPitchInput(_lookInput.Y);
 	
 	_inputComponent->inputData.lookDirection = FVector2D::Zero();
+
+	//TODO: Add movement states
 }
 
 ESystemTickType UPlayerMovementSystem::GetSystemTickType() {
