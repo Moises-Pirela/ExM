@@ -149,7 +149,10 @@ struct FPlayerInputData
 	bool bCrouchInput;
 
 	UPROPERTY(BlueprintReadWrite)
-	bool bIsLeaning;
+	float targetLeanRotAmount;
+	
+	UPROPERTY(BlueprintReadWrite)
+	float targetLeanLocAmount;
 
 	UPROPERTY(BlueprintReadWrite)
 	bool bIsFiring;

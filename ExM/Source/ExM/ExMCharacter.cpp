@@ -70,19 +70,8 @@ void AExMCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 
-	healthComponent = GetComponentByClass<UExMHealthComponent>();
-	statsComponent = GetComponentByClass<UExmStatsComponent>();
-
-	walkSpeed = CalculateMovementSpeed(statsComponent->attributes[ATTRIBUTE_DEXTERITY].GetValue(), walkSpeed, 1);
 	sprintSpeed = walkSpeed * 2.5f;
 	crouchSpeed = walkSpeed * 0.7f;
-	GetCharacterMovement()->JumpZVelocity = CalculateJumpHeight(statsComponent->attributes[ATTRIBUTE_STRENGTH].GetValue(),
-	                                                            statsComponent->attributes[ATTRIBUTE_DEXTERITY].GetValue(),
-	                                                            GetCharacterMovement()->JumpZVelocity, 1);
-
-	statsComponent->Init();
-
-	GetCharacterMovement()->MaxWalkSpeed = walkSpeed;
 
 	FOnTimelineFloat ProgressFunction;
 	ProgressFunction.BindUFunction(this, FName("OnVaultProgress"));
@@ -102,22 +91,14 @@ void AExMCharacter::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
 
-	if(healthComponent->IsDead())
-	{
-		targetLeanRotAmount = -60;
-		targetLeanLocAmount = 0;
-	}
+	// if(healthComponent->IsDead())
+	// {
+	// 	targetLeanRotAmount = -60;
+	// 	targetLeanLocAmount = 0;
+	// }
 
 	//LEAN
-	FRotator targetRotation = FRotator(CameraRoot->GetRelativeRotation().Pitch, CameraRoot->GetRelativeRotation().Yaw,
-	                                   targetLeanRotAmount);
-	FRotator lerpedTarget = FMath::RInterpTo(CameraRoot->GetRelativeRotation(), targetRotation, DeltaSeconds, 10);
-	CameraRoot->SetRelativeRotation(lerpedTarget);
-	MeshRoot->SetRelativeRotation(lerpedTarget);
-	FVector targetLocation = FVector(0, targetLeanLocAmount, CameraRoot->GetRelativeLocation().Z);
-	FVector lerpedLocTarget = FMath::VInterpTo(CameraRoot->GetRelativeLocation(), targetLocation, DeltaSeconds, 10);
-	CameraRoot->SetRelativeLocation(lerpedLocTarget);
-	MeshRoot->SetRelativeLocation(lerpedLocTarget);
+	
 
 	vaultTimeline.TickTimeline(DeltaSeconds);
 }
@@ -135,7 +116,7 @@ void AExMCharacter::Landed(const FHitResult& Hit)
 		damage.baseDamage = fallHeightDiff;
 		damage.damageType = EDamageTypes::DAMAGE_TYPE_FALL;
 
-		healthComponent->TakeDamage(damage);
+		//healthComponent->TakeDamage(damage);
 	}
 }
 
@@ -381,8 +362,6 @@ void AExMCharacter::Move(const FInputActionValue& Value)
 
 	if(Controller != nullptr)
 	{
-		// AddMovementInput(GetActorForwardVector(), MovementVector.Y);
-		// AddMovementInput(GetActorRightVector(), MovementVector.X);
 		CheckStopSprint(MovementVector.Y);
 	}
 }
@@ -445,6 +424,10 @@ void AExMCharacter::CheckStopSprint(float inAxis)
 
 void AExMCharacter::Lean(const FInputActionValue& value)
 {
+	auto _entitySubsystem = GetWorld()->GetSubsystem<UEntitySubsystem>();
+
+	auto _input =  _entitySubsystem->entityContainer->GetComponent<FPlayerInputComponent>(EntityContainer::PLAYER_ENTITY_ID);
+	
 	float leanDirection = value.Get<float>();
 
 	leanDirection = FMath::Clamp(leanDirection, -1, 1);
@@ -455,15 +438,19 @@ void AExMCharacter::Lean(const FInputActionValue& value)
 	FRotator currentRotation = GetFirstPersonCameraComponent()->GetRelativeRotation();
 	FVector  currentLocation = GetFirstPersonCameraComponent()->GetRelativeLocation();
 
-	targetLeanRotAmount = FMath::Clamp(currentRotation.Roll + rollAmount, -maxLeanRotationAmount,
-	                                   maxLeanRotationAmount);
-	targetLeanLocAmount = FMath::Clamp(currentLocation.Y + yMoveAmount, -maxLeanLocationAmount, maxLeanLocationAmount);
+	_input->inputData.targetLeanRotAmount = FMath::Clamp(currentRotation.Roll + rollAmount, -maxLeanRotationAmount,
+									   maxLeanRotationAmount);
+	_input->inputData.targetLeanLocAmount = FMath::Clamp(currentLocation.Y + yMoveAmount, -maxLeanLocationAmount, maxLeanLocationAmount);
 }
 
 void AExMCharacter::StopLean(const FInputActionValue& value)
 {
-	targetLeanRotAmount = 0;
-	targetLeanLocAmount = 0;
+	auto _entitySubsystem = GetWorld()->GetSubsystem<UEntitySubsystem>();
+
+	auto _input =  _entitySubsystem->entityContainer->GetComponent<FPlayerInputComponent>(EntityContainer::PLAYER_ENTITY_ID);
+	
+	_input->inputData.targetLeanRotAmount = 0;
+	_input->inputData.targetLeanLocAmount = 0;
 }
 
 void AExMCharacter::PrimaryFire()
@@ -479,7 +466,7 @@ void AExMCharacter::PrimaryFire()
 		interactComponent->grabbedComponent = nullptr;
 		interactComponent->currentInteractionType = INTERACTION_NONE;
 
-		float throwStrength = CalculateThrowStrength(statsComponent->attributes[ATTRIBUTE_STRENGTH].GetValue(), grabbedComp->GetMass(), 1);
+		float throwStrength = CalculateThrowStrength(10, grabbedComp->GetMass(), 1);
 
 		grabbedComp->AddImpulse(throwDirection * throwStrength, NAME_None, true);
 	} else

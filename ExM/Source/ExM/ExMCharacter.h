@@ -68,8 +68,6 @@ class AExMCharacter : public ACharacter {
 	float maxLeanLocationAmount = 20;
 
 	float startFallHeight;
-	float targetLeanRotAmount;
-	float targetLeanLocAmount;
 
 	FTimerHandle checkCanStandTimerHandle;
 
@@ -90,12 +88,6 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category= "Components")
 	UExmEquipmentComponent* equipmentComponent;
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category= "Components")
-	UExMHealthComponent* healthComponent;
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category= "Components")
-	UExmStatsComponent* statsComponent;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Crouch")
 	float crouchAlpha;
@@ -173,6 +165,17 @@ protected:
 	virtual void SetupPlayerInputComponent(UInputComponent* InputComponent) override;
 
 public:
+
+	USpringArmComponent* GetCameraRoot() const
+	{
+		return CameraRoot;
+	}
+
+	USpringArmComponent* GetMeshRoot() const
+	{
+		return MeshRoot;
+	}
+	
 	USkeletalMeshComponent* GetMesh1P() const
 	{
 		return Mesh1P;
