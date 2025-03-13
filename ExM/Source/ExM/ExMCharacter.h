@@ -12,11 +12,9 @@
 struct FTimeline;
 class UExmInventoryComponent;
 class UExmStatsComponent;
-class UMovieSceneColorPropertySystem;
 class USpringArmComponent;
 class UExmEquipmentComponent;
 class UExMInteractionComponent;
-class UExMJumpComponent;
 class UExMHealthComponent;
 class UInputComponent;
 class USkeletalMeshComponent;
@@ -26,14 +24,6 @@ class UInputMappingContext;
 struct FInputActionValue;
 
 DECLARE_LOG_CATEGORY_EXTERN(LogTemplateCharacter, Log, All);
-
-UENUM(BlueprintType)
-enum EStances {
-	STANCE_STANDING,
-	STANCE_CROUCHING
-};
-
-constexpr float CAN_STAND_DURATION = 0.01667f;
 
 UCLASS(config=Game)
 class AExMCharacter : public ACharacter {
@@ -76,24 +66,11 @@ class AExMCharacter : public ACharacter {
 	float maxLeanRotationAmount = 5;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Movement", meta=(AllowPrivateAccess = "true"))
 	float maxLeanLocationAmount = 20;
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Movement", meta=(AllowPrivateAccess = "true"))
-	float crouchCapsuleHeight = 60;
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Movement", meta=(AllowPrivateAccess = "true"))
-	float standCapsuleHeight = 90;
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Movement", meta=(AllowPrivateAccess = "true"))
-	float stanceChangeSpeed = 10;
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Movement", meta=(AllowPrivateAccess = "true"))
-	float crouchEyeHeight = 20;
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Movement", meta=(AllowPrivateAccess = "true"))
-	float standEyeHeight = 50;
 
 	float startFallHeight;
 	float targetLeanRotAmount;
 	float targetLeanLocAmount;
-	float targetStanceCapsuleHeight;
-	float targetStanceEyeHeight;
 
-	EStances     currentStance;
 	FTimerHandle checkCanStandTimerHandle;
 
 public:
@@ -107,9 +84,6 @@ public:
 	float sprintSpeed = 450;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Movement", meta=(AllowPrivateAccess = "true"))
 	float crouchSpeed = 300;
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category= "Components")
-	UExMJumpComponent* jumpComponent;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category= "Components")
 	UExMInteractionComponent* interactComponent;
@@ -162,12 +136,13 @@ protected:
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	class UInputAction* LookAction;
+	virtual void Jump() override;
 
 protected:
 	virtual void Tick(float DeltaSeconds) override;
 	virtual void Landed(const FHitResult& Hit) override;
-	virtual void Jump() override;
 	virtual void StopJumping() override;
+	void		 TryJump();
 	void         Move(const FInputActionValue& Value);
 	void         Look(const FInputActionValue& Value);
 	void         Sprint(const FInputActionValue& value);
@@ -177,19 +152,15 @@ protected:
 	void SlideTL();
 	UFUNCTION(BlueprintCallable)
 	void CheckStopSprint(float inAxis);
-	void IncreaseSprintCharge();
-	UFUNCTION(BlueprintCallable)
-	void DoCrouch();
-	void StartStand();
-	void DoStand();
 	void Lean(const FInputActionValue& value);
 	void StopLean(const FInputActionValue& value);
 	void PrimaryFire();
 	void SecondaryFire();
-	void TryStand();
 
 	virtual void OnMovementModeChanged(EMovementMode PrevMovementMode, uint8 PreviousCustomMode) override;
-	void         ResetCoyoteTime();
+
+	UFUNCTION(BlueprintCallable)
+	void DoCrouch();
 
 	UFUNCTION()
 	void OnVaultProgress(float Value);

@@ -20,6 +20,23 @@ public:
 	
 	UPROPERTY(Instanced, EditAnywhere, BlueprintReadWrite, Category = "Components")
 	TArray<UEntityComponentConfigBase*> componentConfigs;
+
+	template <typename T>
+	T* GetComponentConfig() const
+	{
+		static_assert(TIsDerivedFrom<T, UEntityComponentConfigBase>::Value,
+		              "T must derive from UEntityComponentConfigBase");
+
+		for (UEntityComponentConfigBase* Config : componentConfigs)
+		{
+			if (T* TypedConfig = Cast<T>(Config))
+			{
+				return TypedConfig;
+			}
+		}
+
+		return nullptr;
+	}
 };
 
 

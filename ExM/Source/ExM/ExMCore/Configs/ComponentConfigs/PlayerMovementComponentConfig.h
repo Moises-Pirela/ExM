@@ -21,12 +21,28 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	float jumpVelocity;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Movement", meta=(AllowPrivateAccess = "true"))
+	float crouchCapsuleHeight = 60;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Movement", meta=(AllowPrivateAccess = "true"))
+	float standCapsuleHeight = 90;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Movement", meta=(AllowPrivateAccess = "true"))
+	float stanceChangeSpeed = 10;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Movement", meta=(AllowPrivateAccess = "true"))
+	float crouchEyeHeight = 20;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Movement", meta=(AllowPrivateAccess = "true"))
+	float standEyeHeight = 50;
+
 	virtual FEntityComponent* CreateComponent() override
 	{
 		FBuffableFloat movementSpeed = FBuffableFloat{};
 		movementSpeed.SetBaseValue(baseMovementSpeed);
 
-		return new FPlayerMovementComponent{.movementSpeed = movementSpeed};
+		float initalTargetHeight = standCapsuleHeight;
+
+		return new FPlayerMovementComponent{
+			.targetStanceCapsuleHeight = initalTargetHeight,
+			.movementSpeed = movementSpeed
+		};
 	};
 
 	virtual UStruct* GetComponentTypeId() override

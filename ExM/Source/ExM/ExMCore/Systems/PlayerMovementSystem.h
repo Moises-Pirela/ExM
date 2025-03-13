@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Systems.h"
+#include "ExM/ExMCore/Configs/ComponentConfigs/PlayerMovementComponentConfig.h"
 #include "PlayerMovementSystem.generated.h"
 
 /**
@@ -14,6 +15,8 @@ class EXM_API UPlayerMovementSystem : public USystemBase {
 	GENERATED_BODY()
 
 public:
+	virtual void Init(EntityContainer* entityContainer) override;
 	virtual void Process(EntityContainer* entityContainer, float deltaTime) override;
 	virtual ESystemTickType GetSystemTickType() override;
+	void TryStand(UPlayerMovementComponentConfig* config, FPlayerMovementComponent* movementComponent) const;
 };

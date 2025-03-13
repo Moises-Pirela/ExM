@@ -109,6 +109,7 @@ struct FEntity {
 
 	FEntityFlags entityFlags;
 	FComponentFlags componentSignature;
+	UEntityConfig* config;
 
 	static FEntity Empty() {
 		return FEntity();

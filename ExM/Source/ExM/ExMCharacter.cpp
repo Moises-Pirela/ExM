@@ -13,7 +13,6 @@
 #include "ExMCore/Components/ExmEquipmentComponent.h"
 #include "ExMCore/Components/ExMHealthComponent.h"
 #include "ExMCore/Components/ExMInteractionComponent.h"
-#include "ExMCore/Components/ExMJumpComponent.h"
 #include "ExMCore/Components/ExmStatsComponent.h"
 #include "ExMCore/Core/EntitySubsystem.h"
 #include "ExMCore/Utils/DamageCalculators.h"
@@ -63,7 +62,6 @@ AExMCharacter::AExMCharacter()
 	FirstPersonCameraComponent->SetRelativeLocation(FVector(-10.f, 0.f, 60.f));
 	FirstPersonCameraComponent->bUsePawnControlRotation = true;
 
-	jumpComponent = CreateDefaultSubobject<UExMJumpComponent>("JumpComponent");
 	interactComponent = CreateDefaultSubobject<UExMInteractionComponent>("InteractionComponent");
 	equipmentComponent = CreateDefaultSubobject<UExmEquipmentComponent>("EquipmentComponent");
 }
@@ -71,10 +69,6 @@ AExMCharacter::AExMCharacter()
 void AExMCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-
-	currentStance = EStances::STANCE_STANDING;
-	targetStanceCapsuleHeight = standCapsuleHeight;
-	targetStanceEyeHeight = standEyeHeight;
 
 	healthComponent = GetComponentByClass<UExMHealthComponent>();
 	statsComponent = GetComponentByClass<UExmStatsComponent>();
@@ -125,21 +119,6 @@ void AExMCharacter::Tick(float DeltaSeconds)
 	CameraRoot->SetRelativeLocation(lerpedLocTarget);
 	MeshRoot->SetRelativeLocation(lerpedLocTarget);
 
-	//--------------CROUCH
-	crouchAlpha = targetStanceCapsuleHeight / GetCapsuleComponent()->GetUnscaledCapsuleHalfHeight();
-	float easedTarget = EaseInOutSine(crouchAlpha);
-	float lerpedStanceTarget = FMath::Lerp(GetCapsuleComponent()->GetUnscaledCapsuleHalfHeight(),
-	                                       targetStanceCapsuleHeight, easedTarget * DeltaSeconds * stanceChangeSpeed);
-	GetCapsuleComponent()->SetCapsuleHalfHeight(lerpedStanceTarget);
-
-	if(currentStance == STANCE_CROUCHING)
-	{
-		crouchAnimAlpha = crouchAlpha;
-	} else
-	{
-		crouchAnimAlpha = 0;
-	}
-
 	vaultTimeline.TickTimeline(DeltaSeconds);
 }
 
@@ -158,10 +137,6 @@ void AExMCharacter::Landed(const FHitResult& Hit)
 
 		healthComponent->TakeDamage(damage);
 	}
-
-
-	ResetCoyoteTime();
-	jumpComponent->ResetJump();
 }
 
 void AExMCharacter::Jump()
@@ -169,8 +144,6 @@ void AExMCharacter::Jump()
 	if(TryVault()) return;
 
 	Super::Jump();
-
-	jumpComponent->currentJumpCount = FMath::Clamp(jumpComponent->currentJumpCount + 1, 0, jumpComponent->maxJumpCount);
 }
 
 void AExMCharacter::StopJumping()
@@ -178,23 +151,19 @@ void AExMCharacter::StopJumping()
 	Super::StopJumping();
 }
 
+void AExMCharacter::TryJump() {
+	
+	auto _entitySubsystem = GetWorld()->GetSubsystem<UEntitySubsystem>();
+
+	auto _input =  _entitySubsystem->entityContainer->GetComponent<FPlayerInputComponent>(EntityContainer::PLAYER_ENTITY_ID);
+
+	if (_input)
+		_input->inputData.bWantsToJump = true;
+}
+
 void AExMCharacter::OnMovementModeChanged(EMovementMode PrevMovementMode, uint8 PreviousCustomMode)
 {
 	Super::OnMovementModeChanged(PrevMovementMode, PreviousCustomMode);
-
-	if(GetCharacterMovement()->MovementMode == MOVE_Falling)
-	{
-		startFallHeight = GetActorLocation().Z;
-
-		GetWorldTimerManager().SetTimer(jumpComponent->coyoteTimerHandle, this, &AExMCharacter::ResetCoyoteTime,
-		                                COYOTE_TIME, false);
-	}
-}
-
-void AExMCharacter::ResetCoyoteTime()
-{
-	GetWorldTimerManager().ClearTimer(jumpComponent->coyoteTimerHandle);
-	jumpComponent->coyoteTimerHandle.Invalidate();
 }
 
 void AExMCharacter::OnVaultProgress(float Value)
@@ -295,12 +264,22 @@ bool AExMCharacter::TryVault()
 	return true;
 }
 
+void AExMCharacter::DoCrouch()
+{
+	auto _entitySubsystem = GetWorld()->GetSubsystem<UEntitySubsystem>();
+
+	auto _input =  _entitySubsystem->entityContainer->GetComponent<FPlayerInputComponent>(EntityContainer::PLAYER_ENTITY_ID);
+
+	if (_input)
+		_input->inputData.bCrouchInput = true;
+}
+
 
 void AExMCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	if(UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(PlayerInputComponent))
 	{
-		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Started, this, &AExMCharacter::Jump);
+		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Started, this, &AExMCharacter::TryJump);
 		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Completed, this, &AExMCharacter::StopJumping);
 
 		EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &AExMCharacter::Move);
@@ -316,7 +295,7 @@ void AExMCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompon
 		EnhancedInputComponent->BindAction(LeanAction, ETriggerEvent::Completed, this, &AExMCharacter::StopLean);
 
 		EnhancedInputComponent->BindAction(CrouchAction, ETriggerEvent::Started, this, &AExMCharacter::DoCrouch);
-		EnhancedInputComponent->BindAction(CrouchAction, ETriggerEvent::Completed, this, &AExMCharacter::StartStand);
+		EnhancedInputComponent->BindAction(CrouchAction, ETriggerEvent::Completed, this, &AExMCharacter::DoCrouch);
 	}
 }
 
@@ -422,23 +401,22 @@ void AExMCharacter::Look(const FInputActionValue& Value) {
 
 void AExMCharacter::Sprint(const FInputActionValue& value)
 {
-	//TODO: Check if reloading
+	auto _entitySubsystem = GetWorld()->GetSubsystem<UEntitySubsystem>();
 
-	if(currentStance == EStances::STANCE_CROUCHING)
-	{
-		StartStand();
-	}
-
-	GetCharacterMovement()->MaxWalkSpeed = sprintSpeed;
-	GetWorld()->GetTimerManager().SetTimer(sprintChargeTimerHandle, this, &AExMCharacter::IncreaseSprintCharge, 0.1f, true);
+	auto _input =  _entitySubsystem->entityContainer->GetComponent<FPlayerInputComponent>(EntityContainer::PLAYER_ENTITY_ID);
+	
+	if (_input)
+		_input->inputData.bWantsToSprint = true;
 }
 
 void AExMCharacter::CancelSprint()
 {
+	auto _entitySubsystem = GetWorld()->GetSubsystem<UEntitySubsystem>();
 
-	GetWorldTimerManager().ClearTimer(sprintChargeTimerHandle);
-	sprintCharge = 0;
-	GetCharacterMovement()->MaxWalkSpeed = walkSpeed;
+	auto _input =  _entitySubsystem->entityContainer->GetComponent<FPlayerInputComponent>(EntityContainer::PLAYER_ENTITY_ID);
+	
+	if (_input)
+		_input->inputData.bCancelSprint = true;
 }
 
 void AExMCharacter::StartSlide()
@@ -456,76 +434,14 @@ void AExMCharacter::CheckStopSprint(float inAxis)
 	}
 }
 
-void AExMCharacter::IncreaseSprintCharge()
-{
-	if(sprintCharge < 1.0f) sprintCharge = FMath::Clamp(sprintCharge + 0.1f, 0.0f, 1.0f);
-	else
-	{
-		GetWorld()->GetTimerManager().ClearTimer(sprintChargeTimerHandle);
-	}
-}
-
-void AExMCharacter::DoCrouch()
-{
-	if(currentStance == EStances::STANCE_STANDING)
-	{
-		if(true)
-		{
-			StartSlide();
-		} else
-		{
-			currentStance = EStances::STANCE_CROUCHING;
-			GetCharacterMovement()->MaxWalkSpeed = crouchSpeed;
-			targetStanceCapsuleHeight = crouchCapsuleHeight;
-			GetWorld()->GetTimerManager().ClearTimer(checkCanStandTimerHandle);
-		}
-	}
-	else
-	{
-		StartStand();
-	}
-}
-
-void AExMCharacter::StartStand()
-{
-	if(currentStance == EStances::STANCE_CROUCHING)
-	{
-		
-		GetWorld()->GetTimerManager().ClearTimer(checkCanStandTimerHandle);
-		GetWorld()->GetTimerManager().SetTimer(checkCanStandTimerHandle, this, &AExMCharacter::TryStand,
-		                                       CAN_STAND_DURATION, true);
-	}
-}
-
-void AExMCharacter::DoStand()
-{
-	GetWorld()->GetTimerManager().ClearTimer(checkCanStandTimerHandle);
-	currentStance = EStances::STANCE_STANDING;
-	GetCharacterMovement()->MaxWalkSpeed = walkSpeed;
-	targetStanceCapsuleHeight = standCapsuleHeight;
-}
-
-void AExMCharacter::TryStand()
-{
-	float   _stanceHeightDiff = crouchCapsuleHeight - standCapsuleHeight;
-	float   _z = GetActorLocation().Z + crouchCapsuleHeight;
-	float   alpha = targetStanceCapsuleHeight / GetCapsuleComponent()->GetUnscaledCapsuleHalfHeight();
-	float   _lerpedHeight = (FMath::Lerp(0, _stanceHeightDiff, alpha) * 1.1) + _z;
-	FVector _startTraceLocation = FVector(GetActorLocation().X, GetActorLocation().Y, _z);
-	FVector _endTraceLocation = FVector(GetActorLocation().X, GetActorLocation().Y, _lerpedHeight);
-
-	FHitResult            hit;
-	FCollisionQueryParams params(NAME_None, false, this);
-	FCollisionShape       sphereShape = FCollisionShape::MakeSphere(GetCapsuleComponent()->GetUnscaledCapsuleRadius());
-
-	if(GetWorld()->SweepSingleByChannel(hit, _startTraceLocation, _endTraceLocation, FQuat::Identity, ECC_Visibility,
-	                                    sphereShape, params))
-	{
-		return;
-	}
-
-	DoStand();
-}
+// void AExMCharacter::IncreaseSprintCharge()
+// {
+// 	if(sprintCharge < 1.0f) sprintCharge = FMath::Clamp(sprintCharge + 0.1f, 0.0f, 1.0f);
+// 	else
+// 	{
+// 		GetWorld()->GetTimerManager().ClearTimer(sprintChargeTimerHandle);
+// 	}
+// }
 
 void AExMCharacter::Lean(const FInputActionValue& value)
 {

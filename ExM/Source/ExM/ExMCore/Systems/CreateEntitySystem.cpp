@@ -12,7 +12,6 @@ void UCreateEntitySystem::Process(EntityContainer* entityContainer, float deltaT
 			entityContainer->CreateEntity(_createEntityEvent->pConfig, _createEntityEvent->pUnrealEntity);
 			entityContainer->eventPool.Deallocate(_event);
 		}
-
 	}
 }
 

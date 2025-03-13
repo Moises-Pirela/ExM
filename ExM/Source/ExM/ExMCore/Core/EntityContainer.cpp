@@ -7,12 +7,15 @@
 #include "ExM/ExMCharacter.h"
 #include "ExM/ExMCore/Configs/EntityConfig.h"
 #include "ExM/ExMCore/Utils/Logger.h"
+#include "GameFramework/CharacterMovementComponent.h"
 
 void EntityContainer::CreateEntity(UEntityConfig* entityConfig, UEntity* startingEntity)
 {
 	int entityId = -1;
 
 	FEntity entity = FEntity();
+
+	entity.config = entityConfig;
 
 	if (lastRecycledEntityId != -1)
 	{
@@ -53,6 +56,7 @@ void EntityContainer::CreateEntity(UEntityConfig* entityConfig, UEntity* startin
 		if (componentType == FPlayerMovementComponent::StaticStruct())
 		{
 			((FPlayerMovementComponent*)component)->character = Cast<AExMCharacter>(startingEntity->GetOwner());
+			((FPlayerMovementComponent*)component)->character->GetCharacterMovement()->MaxWalkSpeed = ((FPlayerMovementComponent*)component)->movementSpeed.GetValue();
 		}
 		
 		int componentTypeId = componentTypeIdMap[componentType];

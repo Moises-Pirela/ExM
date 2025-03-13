@@ -17,6 +17,8 @@ class EXM_API USystemBase : public UObject {
 	GENERATED_BODY()
 
 public:
+	virtual void Init(EntityContainer* entityContainer) PURE_VIRTUAL(USystemBase::Init, return;);
+	
 	virtual void Process(EntityContainer* entityContainer, float deltaTime) PURE_VIRTUAL(USystemBase::Process, return;);
 
 	virtual ESystemTickType GetSystemTickType() PURE_VIRTUAL(USystemBase::GetSystemTickType, return ESystemTickType::SYSTEM_TICK;);
