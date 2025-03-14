@@ -2,16 +2,14 @@
 
 
 #include "LeanSystem.h"
-
 #include "ExM/ExMCharacter.h"
 #include "GameFramework/SpringArmComponent.h"
 
-void ULeanSystem::Init(EntityContainer* entityContainer)
-{
+void ULeanSystem::Init(EntityContainer* entityContainer) {
 }
 
-void ULeanSystem::Process(EntityContainer* entityContainer, float deltaTime)
-{
+void ULeanSystem::Process(EntityContainer* entityContainer, float deltaTime) {
+
 	if (entityContainer->PLAYER_ENTITY_ID == -1) return;
 
 	FEntity& _playerEntity = entityContainer->GetPlayerEntity();
@@ -19,11 +17,19 @@ void ULeanSystem::Process(EntityContainer* entityContainer, float deltaTime)
 		_playerEntity.id);
 	FPlayerInputComponent* _inputComponent = entityContainer->GetComponent<FPlayerInputComponent>(_playerEntity.id);
 
+	FHealthComponent* _healthComponent = entityContainer->GetComponent<FHealthComponent>(_playerEntity.id);
+
+	if (_healthComponent->currentHealth) {
+
+		_inputComponent->inputData.targetLeanRotAmount = -60;
+		_inputComponent->inputData.targetLeanLocAmount = -60;
+	}
+
 	float _targetLeanRotAmount = _inputComponent->inputData.targetLeanRotAmount;
 	float _targetLeanLocAmount = _inputComponent->inputData.targetLeanLocAmount;
 
-	auto _cameraRoot = _movementStateComponent->character->GetCameraRoot();
-	auto _meshRoot = _movementStateComponent->character->GetMeshRoot();
+	USpringArmComponent* _cameraRoot = _movementStateComponent->character->GetCameraRoot();
+	USpringArmComponent* _meshRoot = _movementStateComponent->character->GetMeshRoot();
 	
 	FRotator targetRotation = FRotator(_cameraRoot->GetRelativeRotation().Pitch, _cameraRoot->GetRelativeRotation().Yaw,
 									   _targetLeanRotAmount);
@@ -36,7 +42,6 @@ void ULeanSystem::Process(EntityContainer* entityContainer, float deltaTime)
 	_meshRoot->SetRelativeLocation(lerpedLocTarget);
 }
 
-ESystemTickType ULeanSystem::GetSystemTickType()
-{
+ESystemTickType ULeanSystem::GetSystemTickType() {
 	return SYSTEM_TICK;
 }

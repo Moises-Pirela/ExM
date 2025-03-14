@@ -100,7 +100,7 @@ void AExMCharacter::Tick(float DeltaSeconds)
 	//LEAN
 	
 
-	vaultTimeline.TickTimeline(DeltaSeconds);
+	//vaultTimeline.TickTimeline(DeltaSeconds);
 }
 
 void AExMCharacter::Landed(const FHitResult& Hit)
@@ -122,7 +122,7 @@ void AExMCharacter::Landed(const FHitResult& Hit)
 
 void AExMCharacter::Jump()
 {
-	if(TryVault()) return;
+	//if(TryVault()) return;
 
 	Super::Jump();
 }

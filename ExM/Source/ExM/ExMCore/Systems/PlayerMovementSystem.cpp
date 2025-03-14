@@ -14,7 +14,6 @@
 
 void UPlayerMovementSystem::Init(EntityContainer* entityContainer)
 {
-	
 }
 
 void UPlayerMovementSystem::Process(EntityContainer* entityContainer, float deltaTime)
@@ -83,7 +82,8 @@ void UPlayerMovementSystem::Process(EntityContainer* entityContainer, float delt
 		if (_movementStateComponent->currentStance == EStances::STANCE_STANDING)
 		{
 			_movementStateComponent->currentStance = EStances::STANCE_CROUCHING;
-			_movementStateComponent->character->GetCharacterMovement()->MaxWalkSpeed = _movementStateComponent->movementSpeed.GetValue() * movementConfig->crouchModifier;
+			_movementStateComponent->character->GetCharacterMovement()->MaxWalkSpeed = _movementStateComponent->
+				movementSpeed.GetValue() * movementConfig->crouchModifier;
 			_movementStateComponent->targetStanceCapsuleHeight = movementConfig->crouchCapsuleHeight;
 		}
 		else
@@ -99,16 +99,20 @@ void UPlayerMovementSystem::Process(EntityContainer* entityContainer, float delt
 		TryStand(movementConfig, _movementStateComponent);
 	}
 
-	_movementStateComponent->crouchAlpha = _movementStateComponent->targetStanceCapsuleHeight / _movementStateComponent->character->GetCapsuleComponent()->GetUnscaledCapsuleHalfHeight();
+	_movementStateComponent->crouchAlpha = _movementStateComponent->targetStanceCapsuleHeight / _movementStateComponent
+		->character->GetCapsuleComponent()->GetUnscaledCapsuleHalfHeight();
 	float easedTarget = EaseInOutSine(_movementStateComponent->crouchAlpha);
-	float lerpedStanceTarget = FMath::Lerp(_movementStateComponent->character->GetCapsuleComponent()->GetUnscaledCapsuleHalfHeight(),
-										   _movementStateComponent->targetStanceCapsuleHeight, easedTarget * deltaTime * movementConfig->stanceChangeSpeed);
+	float lerpedStanceTarget = FMath::Lerp(
+		_movementStateComponent->character->GetCapsuleComponent()->GetUnscaledCapsuleHalfHeight(),
+		_movementStateComponent->targetStanceCapsuleHeight,
+		easedTarget * deltaTime * movementConfig->stanceChangeSpeed);
 	_movementStateComponent->character->GetCapsuleComponent()->SetCapsuleHalfHeight(lerpedStanceTarget);
 
-	if(_movementStateComponent->currentStance == STANCE_CROUCHING)
+	if (_movementStateComponent->currentStance == STANCE_CROUCHING)
 	{
 		_movementStateComponent->crouchAnimAlpha = _movementStateComponent->crouchAlpha;
-	} else
+	}
+	else
 	{
 		_movementStateComponent->crouchAnimAlpha = 0;
 	}
@@ -128,19 +132,19 @@ void UPlayerMovementSystem::Process(EntityContainer* entityContainer, float delt
 		_movementStateComponent->ChangeMovementMode(EXM_WALK);
 	}
 
-	float baseMovementSpeed = _movementStateComponent->movementSpeed.GetValue();
+	float finalMovementSpeed = _movementStateComponent->movementSpeed.GetValue();
 
 	if (_movementStateComponent->currentMovementMode == EXM_SPRINT)
 	{
-		baseMovementSpeed *= movementConfig->sprintModifier;
+		finalMovementSpeed *= movementConfig->sprintModifier;
 	}
 
 	if (_movementStateComponent->currentStance == EStances::STANCE_CROUCHING)
 	{
-		baseMovementSpeed *= movementConfig->crouchModifier;
+		finalMovementSpeed *= movementConfig->crouchModifier;
 	}
 
-	_movementStateComponent->character->GetCharacterMovement()->MaxWalkSpeed = baseMovementSpeed;
+	_movementStateComponent->character->GetCharacterMovement()->MaxWalkSpeed = finalMovementSpeed;
 }
 
 ESystemTickType UPlayerMovementSystem::GetSystemTickType()
@@ -148,22 +152,26 @@ ESystemTickType UPlayerMovementSystem::GetSystemTickType()
 	return ESystemTickType::SYSTEM_TICK;
 }
 
-void UPlayerMovementSystem::TryStand(UPlayerMovementComponentConfig* config, FPlayerMovementComponent* movementComponent) const
+void UPlayerMovementSystem::TryStand(UPlayerMovementComponentConfig* config,
+                                     FPlayerMovementComponent* movementComponent) const
 {
-	float   _stanceHeightDiff = config->crouchCapsuleHeight - config->standCapsuleHeight;
-	float   _z = movementComponent->character->GetActorLocation().Z +  config->crouchCapsuleHeight;
-	float   alpha = movementComponent->targetStanceCapsuleHeight / movementComponent->character->GetCapsuleComponent()->GetUnscaledCapsuleHalfHeight();
-	float   _lerpedHeight = (FMath::Lerp(0, _stanceHeightDiff, alpha) * 1.1) + _z;
-	FVector _startTraceLocation = FVector(movementComponent->character->GetActorLocation().X, movementComponent->character->GetActorLocation().Y, _z);
-	FVector _endTraceLocation = FVector(movementComponent->character->GetActorLocation().X, movementComponent->character->GetActorLocation().Y, _lerpedHeight);
+	float _stanceHeightDiff = config->crouchCapsuleHeight - config->standCapsuleHeight;
+	float _z = movementComponent->character->GetActorLocation().Z + config->crouchCapsuleHeight;
+	float alpha = movementComponent->targetStanceCapsuleHeight / movementComponent->character->GetCapsuleComponent()->
+		GetUnscaledCapsuleHalfHeight();
+	float _lerpedHeight = (FMath::Lerp(0, _stanceHeightDiff, alpha) * 1.1) + _z;
+	FVector _startTraceLocation = FVector(movementComponent->character->GetActorLocation().X,
+	                                      movementComponent->character->GetActorLocation().Y, _z);
+	FVector _endTraceLocation = FVector(movementComponent->character->GetActorLocation().X,
+	                                    movementComponent->character->GetActorLocation().Y, _lerpedHeight);
 
-	FHitResult            hit;
+	FHitResult hit;
 	FCollisionQueryParams params(NAME_None, true);
-	FCollisionShape       sphereShape = FCollisionShape::MakeSphere(movementComponent->character->GetCapsuleComponent()->GetUnscaledCapsuleRadius());
+	FCollisionShape sphereShape = FCollisionShape::MakeSphere(
+		movementComponent->character->GetCapsuleComponent()->GetUnscaledCapsuleRadius());
 
-	if(GetWorld()->SweepSingleByChannel(hit, _startTraceLocation, _endTraceLocation, FQuat::Identity, ECC_Visibility,
-										sphereShape, params))
-	{
+	if (GetWorld()->SweepSingleByChannel(hit, _startTraceLocation, _endTraceLocation, FQuat::Identity, ECC_Visibility,
+	                                     sphereShape, params)) {
 		return;
 	}
 

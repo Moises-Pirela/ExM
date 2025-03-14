@@ -33,8 +33,8 @@ enum EStances {
 USTRUCT(BlueprintType)
 struct FPlayerMovementComponent : public FEntityComponent {
 	GENERATED_BODY()
+	
 	AExMCharacter* character;
-
 	EExMMovementMode currentMovementMode;
 	EExMMovementMode previousMovementMode;
 	EStances     currentStance;
@@ -53,8 +53,7 @@ struct FPlayerMovementComponent : public FEntityComponent {
 
 	FBuffableFloat movementSpeed;
 
-	void ChangeMovementMode(EExMMovementMode newMovementMode)
-	{
+	void ChangeMovementMode(EExMMovementMode newMovementMode) {
 		previousMovementMode = currentMovementMode;
 		currentMovementMode = newMovementMode;
 	}
@@ -77,7 +76,10 @@ struct FJumpComponent : public FEntityComponent {
 USTRUCT(BlueprintType)
 struct FHealthComponent : public FEntityComponent {
 	GENERATED_BODY()
-	FBuffableFloat health;
+
+	FBuffableFloat maxHealth;
+	
+	float currentHealth;
 };
 
 USTRUCT(BlueprintType)
@@ -169,6 +171,16 @@ struct FPlayerInputComponent : public FEntityComponent {
 USTRUCT(BlueprintType)
 struct FAIComponent : public FEntityComponent {
 	GENERATED_BODY()
+};
+
+USTRUCT(BlueprintType)
+struct FVaultComponent : public FEntityComponent {
+	GENERATED_BODY()
+    
+	FVector vaultStartLocation;
+	FVector vaultEndLocation;
+    
+	bool isVaulting;
 };
 
 
